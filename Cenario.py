@@ -204,7 +204,7 @@ class Cenario:
         # Escrita da extensão
         arq.write("Extensão (km): \n")
         passo = 0 
-        for i in range(int(tam_rio)): 
+        while passo*1000 < int(tam_rio):
             arq.write(converte_float(str(passo)) + ";")
             passo += tam_cel/1000 
         arq.write("\n") 

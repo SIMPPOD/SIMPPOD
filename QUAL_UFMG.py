@@ -34,14 +34,14 @@ class QUAL_UFMG(object):
         const = ler.ler_constantes(caminho_constantes)
         # const = [DBO5r, ODr, NORGr, NAMONr, NNITRIr, PORGr, PINORGr, Qr, tam_rio, T, Alt, v, Ro2a, Ks, K1, K2,
         #          Koa, Kan, Koi, Kspo, a_vel, b_vel, Qinc, a_prof, b_prof, formula_k2, m, n, useK1, PH, Samon, NNITRAr,
-        #          Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc]
+        #          Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, Sd, Lrd]
 
         # Cria o rio
         rio = Rio(const[0], const[1], const[2], const[3], const[4], const[5], const[6], const[7], const[8], const[9],
                   const[10], const[11], const[12], const[13], const[14], const[15], const[16], const[17], const[18],
                   const[19], const[20], const[21], const[22], const[23], const[24], const[25], const[26], const[27],
                   const[28], const[29], const[30], const[31], const[32], const[33], const[34], const[35], const[36],
-                  classe.get(), const[38], const[39], const[40], const[41], const[42], const[43], const[44])
+                  const[37], const[38], const[39], const[40], const[41], const[42], const[43], const[44], const[45], const[46])
 
         # Correcao das constantes do rio de acordo com a temperatura
         if simula_difusa:
@@ -87,7 +87,7 @@ class QUAL_UFMG(object):
 
     def executa(self, Rio, matriz_contribuicoes, matriz_reducao_pontual, simula_difusa, matriz_reducao_difusa, scs, numFuncaoP, matriz_tipo_contribuicoes):
         euler = Euler()
-        constantes = Constantes(None, None, None, None, None, None, None, None, None, None, None)
+        constantes = Constantes(None, None, None, None, None, None, None, None, None, None, None, None, None)
 
         # Correcao da concentracao de saturacao pela altitude
         Cs = constantes.corrige_Cs(Rio.Alt, Rio.T)
@@ -101,7 +101,7 @@ class QUAL_UFMG(object):
             else:
                 matriz_final = Rio.Concatena_matrizes(matriz_difusa, matriz_contribuicoes, Cs)
 
-            cenario = euler.Calcula(Rio, matriz_final, Cs, matriz_tipo_contribuicoes[i], simula_difusa)
+            cenario = euler.Calcula(Rio, matriz_final, Cs, matriz_tipo_contribuicoes, simula_difusa)
             cenario.sub_bacias = sub_bacias
             cenario.matriz_cargas = matriz_cargas
 

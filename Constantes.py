@@ -11,7 +11,7 @@ Tbase = 20
 class Constantes:
 
     # CONSTRUTOR
-    def __init__(self, K1, K2, Ks, Koa, Kan, Knn, Kspo, Koi, Kso, Kt, Samon):
+    def __init__(self, K1, K2, Ks, Koa, Kan, Knn, Kspo, Koi, Kso, Kt, Samon, Sd, Lrd):
         self.K1 = K1  # Coeficiente de desoxigenacao
         self.K2 = K2  # Coeficiente de reaeracao
         self.Koa = Koa  # Coeficiente de conversao do nitrogenio organico a amonia
@@ -25,6 +25,8 @@ class Constantes:
         self.Kd = 0  # Coeficiente de decomposicao
         self.Ks = Ks  # Coeficiente de sedimentacao
         self.Samon = Samon  # Fluxo de liberacao de amonia pelo sedimento de fundo
+        self.Sd = Sd
+        self.Lrd = Lrd
 
     # METODOS
     # elf.correcao(self.Kspo, 1.047, 20.6, 20)
@@ -89,7 +91,7 @@ class Constantes:
 
         return K2
 
-    def set_constantes(self, tetaS, tetaD, teta2, tetaOA, tetaAN, tetaSPO, tetaOI, tetaSO, tetaNN, T, Q, H, v, Rio, tetaSamon):
+    def set_constantes(self, tetaS, tetaD, teta2, tetaOA, tetaAN, tetaSPO, tetaOI, tetaSO, tetaNN, T, Q, H, v, Rio, tetaSamon, tetaSd):
         self.Ks = self.correcao(self.Ks, tetaS, T, Tbase)
         self.Koa = self.correcao(self.Koa, tetaOA, T, Tbase)
         self.Kan = self.correcao(self.Kan, tetaAN, T, Tbase)
@@ -101,6 +103,7 @@ class Constantes:
         self.Kd = self.set_Kd(Q, H, tetaD, self.K1, T)
         self.Kt = self.set_Kt(Rio.useK1, self.K1, self.Kd)
         self.Samon = self.correcao(self.Samon, tetaSamon, T, Tbase)
+        self.Sd = self.correcao(self.Sd, tetaSd, T, Tbase)
 
     # Metodo que corrige o coeficiente de saturacao
     @staticmethod

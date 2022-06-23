@@ -10,7 +10,7 @@ class Rio(object):
     # CONSTRUTOR
     def __init__(self, DBO5r, ODr, NORGr, NAMONr, NNITRIr, PORGr, PINORGr, Qr, tam_rio, T, Alt, v, Ro2a, Ks, K1, K2,
                  Koa, Kan, Koi, Kspo, a_vel, b_vel, Qinc, a_prof, b_prof, formula_k2, m, n, useK1, PH, Samon, NNITRAr,
-                 Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, NORGinc, NAMONinc, NNITRinc, NNITRAinc):
+                 Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, NORGinc, NAMONinc, NNITRinc, NNITRAinc, Sd, Lrd):
 
         self.DBO5r = DBO5r  # Concentracao de DBO no rio
         self.ODr = ODr  # Concentracao de OD no rio
@@ -58,6 +58,8 @@ class Rio(object):
         self.NAMONinc = NAMONinc
         self.NNITRinc = NNITRinc
         self.NNITRAinc = NNITRAinc
+        self.Sd = Sd
+        self.Lrd = Lrd
 
     # METODOS
 
@@ -66,7 +68,7 @@ class Rio(object):
         C0 = ((Qr * ODr) + (Qe * ODe) + (self.ODinc * self.Qinc)) / (Qr + Qe + self.Qinc)
         D0 = Cs - C0
         L0 = ((Qr * DBOur) + (Qe * DBO5e) + (self.DBOinc * self.Qinc)) / (Qr + Qe + self.Qinc)
-        vet_ini = np.array([[L0], [D0], [C0]])
+        vet_ini = [[L0], [D0], [C0]]
         return vet_ini
 
     # Metodo que usa a equacao de mistura do nitrogenio
@@ -76,7 +78,7 @@ class Rio(object):
         NAMON0 = ((NAMONr * Qr) + (NAMONe * Qe)) / (Qr + Qe)
         NNITRI0 = ((NNITRIr * Qr) + (NNITRIe * Qe)) / (Qr + Qe)
         NNITRA0 = ((NNITRAr * Qr) + (NNITRAe * Qe)) / (Qr + Qe)
-        vet_ini = np.array([[NORG0], [NAMON0], [NNITRI0], [NNITRA0]])
+        vet_ini = [[NORG0], [NAMON0], [NNITRI0], [NNITRA0]]
         return vet_ini
 
     # Metodo que usa a equacao de mistura do fosforo
@@ -84,7 +86,7 @@ class Rio(object):
     def eq_mistura_Fosf(PORGr, PINORGr, PORGe, PINORGe, Qr, Qe):
         PORG0 = ((PORGr * Qr) + (PORGe * Qe)) / (Qr + Qe)
         PINORG0 = ((PINORGr * Qr) + (PINORGe * Qe)) / (Qr + Qe)
-        vet_ini = np.array([[PORG0], [PORG0]])
+        vet_ini = [[PORG0], [PINORG0]]
         return vet_ini
 
     def Concatena_matrizes(self, matriz_difusa, matriz_contribuicoes, Cs):

@@ -17,10 +17,10 @@ class SCS(object):
         self.vetor_CN = []  # Vetor com calculos do CN
         self.vetor_vazoes = []
         x = Leitura_difusa()
-        matriz_CN = x.ler(caminho_cn[0])  # Entrada_CN.txt = [ID,Area,CN,Código]
-        self.matriz_CME = x.ler_cme(caminho_CME[0])  # Entrada_CME.txt = [Codigo,Uso do Solo,CME_DBO,CME_NTK,CME_NOX,CME_PINORG]
-        self.matriz_usos = x.ler(caminho_usos[0])  # Entrada_Usos.txt = [ID,Area_codigo,Codigo]
-        [self.matriz_subbacias, tam_celula, self.fator] = x.ler_hidro(caminho_hidro[0])  # Entrada_Hidro.txt = [ID,L,s,A,C,P,J,M,L_Rio,N,Altitude,Temp]
+        matriz_CN = x.ler(caminho_cn)  # Entrada_CN.txt = [ID,Area,CN,Código]
+        self.matriz_CME = x.ler_cme(caminho_CME)  # Entrada_CME.txt = [Codigo,Uso do Solo,CME_DBO,CME_NTK,CME_NOX,CME_PINORG]
+        self.matriz_usos = x.ler(caminho_usos)  # Entrada_Usos.txt = [ID,Area_codigo,Codigo]
+        [self.matriz_subbacias, tam_celula, self.fator] = x.ler_hidro(caminho_hidro)  # Entrada_Hidro.txt = [ID,L,s,A,C,P,J,M,L_Rio,N,Altitude,Temp]
         del tam_celula
         self.matriz_cargas = []  # matriz n° subbacias x 4, com vetores [carga_DBO, carga_NTK, carga_NOX, carga_PINORG]
         self.calcula_CN(matriz_CN)
