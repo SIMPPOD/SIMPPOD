@@ -157,80 +157,80 @@ class Cromossomo:
                 return False
             elif self.simula_difusa:
                 if Rio.classe == 1.0:
-                    for i in range(len(self.cenario.Y_DBO[0])):
-                        if self.cenario.Y_Nitr[2][i] > 1 or self.cenario.Y_Nitr[3][i] > 10 or self.cenario.Y_Fosf[1][i] > 0.05:
+                    for i in range(len(self.cenario.Y_DBO)):
+                        if self.cenario.Y_Nnitri[i] > 1 or self.cenario.Y_Nnitra[i] > 10 or self.cenario.Y_Pinorg[i] > 0.05:
                             # Se nitrito > 1 ou nitrato > 10 ou fosforo inorganico > 0.05
                             return False
-                        if Rio.PH <= 7.5 and self.cenario.Y_Nitr[1][i] > 3.7:
+                        if Rio.PH <= 7.5 and self.cenario.Y_Namon[i] > 3.7:
                             # Se pH <= 7.5 e amonia > 3.7
                             return False
-                        if 8 > Rio.PH > 7.5 and self.cenario.Y_Nitr[1][i] > 2:
+                        if 8 > Rio.PH > 7.5 and self.cenario.Y_Namon[i] > 2:
                             # Se 7.5 < pH < 8 e amonia > 2
                             return False
-                        if 8.5 > Rio.PH > 8 and self.cenario.Y_Nitr[1][i] > 1:
+                        if 8.5 > Rio.PH > 8 and self.cenario.Y_Namon[i] > 1:
                             # Se 8 < pH < 8.5 e amonia > 1
                             return False
-                        if Rio.PH >= 8.5 and self.cenario.Y_Nitr[1][i] > 0.5:
+                        if Rio.PH >= 8.5 and self.cenario.Y_Namon[i] > 0.5:
                             # Se pH >= 8.5 e amonia > 0.5
                             return False
                 elif Rio.classe == 2.0:
-                    for i in range(len(self.cenario.Y_DBO[0])):
-                        if self.cenario.Y_Nitr[2][i] > 1 or self.cenario.Y_Nitr[3][i] > 10:
+                    for i in range(len(self.cenario.Y_DBO)):
+                        if self.cenario.Y_Nnitri[i] > 1 or self.cenario.Y_Nnitra[i] > 10:
                             # Se nitrito > 1 ou nitrato > 10
                             return False
-                        if Rio.PH <= 7.5 and self.cenario.Y_Nitr[1][i] > 3.7:
+                        if Rio.PH <= 7.5 and self.cenario.Y_Namon[i] > 3.7:
                             # Se ph <= 7.5 e amonia > 3.7
                             return False
-                        if 8 >= Rio.PH > 7.5 and self.cenario.Y_Nitr[1][i] > 50:
+                        if 8 >= Rio.PH > 7.5 and self.cenario.Y_Namon[i] > 50:
                             # Se 7.5 < pH <= 8 e amonia > 50
                             return False
-                        if 8.5 > Rio.PH > 8 and self.cenario.Y_Nitr[1][i] > 50:
+                        if 8.5 > Rio.PH > 8 and self.cenario.Y_Namon[i] > 50:
                             # Se 8 < pH < 8.5 e amonia > 50
                             return False
-                        if Rio.PH >= 8.5 and self.cenario.Y_Nitr[1][i] > 0.5:
+                        if Rio.PH >= 8.5 and self.cenario.Y_Namon[i] > 0.5:
                             # Se pH >= 8.5 e amonia > 0.5
                             return False
                 elif Rio.classe == 3.0:
-                    for i in range(len(self.cenario.Y_DBO[0])):
-                        if self.cenario.Y_Nitr[2][i] > 1 or self.cenario.Y_Nitr[3][i] > 10 or self.cenario.Y_Fosf[1][i] > 0.075:
+                    for i in range(len(self.cenario.Y_DBO)):
+                        if self.cenario.Y_Nnitri[i] > 1 or self.cenario.Y_Nnitra[i] > 10 or self.cenario.Y_Pinorg[i] > 0.075:
                             # Se nitrito > 1 ou nitrato > 10 ou fosforo inorganico > 0.075
                             return False
-                        if Rio.PH <= 7.5 and self.cenario.Y_Nitr[1][i] > 13.3:
+                        if Rio.PH <= 7.5 and self.cenario.Y_Namon[i] > 13.3:
                             # Se pH <= 7.5 e amonia > 13.3
                             return False
-                        if 8 > Rio.PH > 7.5 and self.cenario.Y_Nitr[1][i] > 5.6:
+                        if 8 > Rio.PH > 7.5 and self.cenario.Y_Namon[i] > 5.6:
                             # Se 7.5 < pH < 8 e amonia > 5.6
                             return False
-                        if 8.5 > Rio.PH > 8 and self.cenario.Y_Nitr[1][i] > 2.2:
+                        if 8.5 > Rio.PH > 8 and self.cenario.Y_Namon[i] > 2.2:
                             # Se 8 < pH < 8.5 e amonia > 2.2
                             return False
-                        if Rio.PH >= 8.5 and self.cenario.Y_Nitr[1][i] > 1:
+                        if Rio.PH >= 8.5 and self.cenario.Y_Namon[i] > 1:
                             # Se pH >= 8.5 e amonia > 1
                             return False
                 elif Rio.classe == 4.0:
-                    for i in range(len(self.cenario.Y_DBO[0])):
-                        if self.cenario.Y_Nitr[2][i] > 50 or self.cenario.Y_Nitr[3][i] > 50 or self.cenario.Y_Fosf[1][i] > 50:
+                    for i in range(len(self.cenario.Y_DBO)):
+                        if self.cenario.Y_Nnitri[i] > 50 or self.cenario.Y_Nnitra[i] > 50 or self.cenario.Y_Pinorg[i] > 50:
                             # Se nitrito > 50 ou nitrato > 50 ou fosforo inorganico > 50
                             return False
 
             if Rio.classe == 1.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 3 or self.cenario.Y_DBO[2][i] < 6:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 3 or self.cenario.Y_OD[i] < 6:
                         # Se DBO > 3 ou OD < 6
                         return False
             elif Rio.classe == 2.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 5 or self.cenario.Y_DBO[2][i] <= 5:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 5 or self.cenario.Y_OD[i] <= 5:
                         # Se DBO > 5 ou OD <= 5
                         return False
             elif Rio.classe == 3.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 10 or self.cenario.Y_DBO[2][i] < 4:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 10 or self.cenario.Y_OD[i] < 4:
                         # Se DBO > 10 ou OD < 4
                         return False
             elif Rio.classe == 4.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 30 or self.cenario.Y_DBO[2][i] < 2:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 30 or self.cenario.Y_OD[i] < 2:
                         # Se DBO > 30 ou OD < 2
                         return False
             return True
@@ -238,45 +238,45 @@ class Cromossomo:
             if len(self.alelos) == 0:
                 return False
             elif Rio.classe == 1.0:
-                for i in range(len(self.cenario.Y_Nitr[1])):
-                    if (self.cenario.Y_Nitr[1][i] >= 3.7 and Rio.PH <= 7.5): # or self.cenario.Y_DBO[2][i] < 6:
+                for i in range(len(self.cenario.Y_Namon)):
+                    if (self.cenario.Y_Namon[i] >= 3.7 and Rio.PH <= 7.5): # or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 3.7 com pH <= 7.5, ou OD < 6
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 2 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_DBO[2][i] < 6:
+                    elif (self.cenario.Y_Namon[i] >= 2 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 2 com 7.5 <= pH <= 8.0, ou OD < 6
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 1 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_DBO[2][i] < 6:
+                    elif (self.cenario.Y_Namon[i] >= 1 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 1 com 8.0 <= pH <= 8.5, ou OD < 6
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 0.5 and Rio.PH > 8.5): # or self.cenario.Y_DBO[2][i] < 6:
+                    elif (self.cenario.Y_Namon[i] >= 0.5 and Rio.PH > 8.5): # or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 0.5 com pH > 8.5, ou OD < 6
                         return False
             elif Rio.classe == 2.0:
-                for i in range(len(self.cenario.Y_Nitr[1])):
-                    if (self.cenario.Y_Nitr[1][i] >= 3.7 and Rio.PH <= 7.5): # or self.cenario.Y_DBO[2][i] < 5:
+                for i in range(len(self.cenario.Y_Namon)):
+                    if (self.cenario.Y_Namon[i] >= 3.7 and Rio.PH <= 7.5): # or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 3.7 com pH <= 7.5, ou OD < 5
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 2 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_DBO[2][i] < 5:
+                    elif (self.cenario.Y_Namon[i] >= 2 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 2 com 7.5 <= pH <= 8.0, ou OD < 5
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 1 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_DBO[2][i] < 5:
+                    elif (self.cenario.Y_Namon[i] >= 1 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 1 com 8.0 <= pH <= 8.5, ou OD < 5
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 0.5 and Rio.PH > 8.5): # or self.cenario.Y_DBO[2][i] < 5:
+                    elif (self.cenario.Y_Namon[i] >= 0.5 and Rio.PH > 8.5): # or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 0.5 com pH > 8.5, ou OD < 5
                         return False
             elif Rio.classe == 3.0:
-                for i in range(len(self.cenario.Y_Nitr[1])):
-                    if (self.cenario.Y_Nitr[1][i] >= 13.3 and Rio.PH <= 7.5): # or self.cenario.Y_DBO[2][i] < 4:
+                for i in range(len(self.cenario.Y_Namon)):
+                    if (self.cenario.Y_Namon[i] >= 13.3 and Rio.PH <= 7.5): # or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 13.3 com pH <= 7.5, ou OD < 4
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 5.6 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_DBO[2][i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 5.6 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 5.6 com 7.5 <= pH <= 8.0, ou OD < 4
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 2.2 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_DBO[2][i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 2.2 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 2.2 com 8.0 <= pH <= 8.5, ou OD < 4
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 1.0 and Rio.PH > 8.5): # or self.cenario.Y_DBO[2][i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 1.0 and Rio.PH > 8.5): # or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 1.0 com pH > 8.5, ou OD < 4
                         return False
             elif Rio.classe == 4.0:
@@ -287,64 +287,63 @@ class Cromossomo:
             if len(self.alelos) == 0:
                 return False
             elif Rio.classe == 1.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 3 or self.cenario.Y_DBO[2][i] < 6:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 3 or self.cenario.Y_OD[i] < 6:
                         # Se DBO > 3 ou OD < 6
                         return False
-                for i in range(len(self.cenario.Y_Nitr[1])):
-                    if (self.cenario.Y_Nitr[1][i] >= 3.7 and Rio.PH <= 7.5) or self.cenario.Y_DBO[2][i] < 6:
+                for i in range(len(self.cenario.Y_Namon)):
+                    if (self.cenario.Y_Namon[i] >= 3.7 and Rio.PH <= 7.5) or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 3.7 com pH <= 7.5, ou OD < 6
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 2 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_DBO[2][i] < 6:
+                    elif (self.cenario.Y_Namon[i] >= 2 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 2 com 7.5 <= pH <= 8.0, ou OD < 6
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 1 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_DBO[2][i] < 6:
+                    elif (self.cenario.Y_Namon[i] >= 1 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 1 com 8.0 <= pH <= 8.5, ou OD < 6
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 0.5 and Rio.PH > 8.5) or self.cenario.Y_DBO[2][i] < 6:
+                    elif (self.cenario.Y_Namon[i] >= 0.5 and Rio.PH > 8.5) or self.cenario.Y_OD[i] < 6:
                         # Se Namon >= 0.5 com pH > 8.5, ou OD < 6
                         return False
             elif Rio.classe == 2.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 5 or self.cenario.Y_DBO[2][i] <= 5:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 5 or self.cenario.Y_OD[i] <= 5:
                         # Se DBO > 5 ou OD <= 5
                         return False
-                for i in range(len(self.cenario.Y_Nitr[1])):
-                    if (self.cenario.Y_Nitr[1][i] >= 3.7 and Rio.PH <= 7.5) or self.cenario.Y_DBO[2][i] < 5:
+                for i in range(len(self.cenario.Y_Namon)):
+                    if (self.cenario.Y_Namon[i] >= 3.7 and Rio.PH <= 7.5) or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 3.7 com pH <= 7.5, ou OD < 5
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 2 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_DBO[2][i] < 5:
+                    elif (self.cenario.Y_Namon[i] >= 2 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 2 com 7.5 <= pH <= 8.0, ou OD < 5
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 1 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_DBO[2][i] < 5:
+                    elif (self.cenario.Y_Namon[i] >= 1 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 1 com 8.0 <= pH <= 8.5, ou OD < 5
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 0.5 and Rio.PH > 8.5) or self.cenario.Y_DBO[2][i] < 5:
+                    elif (self.cenario.Y_Namon[i] >= 0.5 and Rio.PH > 8.5) or self.cenario.Y_OD[i] < 5:
                         # Se Namon >= 0.5 com pH > 8.5, ou OD < 5
                         return False
             elif Rio.classe == 3.0:
-                for i in range(len(self.cenario.Y_DBO[0])):
-                    if self.cenario.Y_DBO[0][i] > 10 or self.cenario.Y_DBO[2][i] < 4:
+                for i in range(len(self.cenario.Y_DBO)):
+                    if self.cenario.Y_DBO[i] > 10 or self.cenario.Y_OD[i] < 4:
                         # Se DBO > 10 ou OD < 4
                         return False
-                for i in range(len(self.cenario.Y_Nitr[1])):
-                    if (self.cenario.Y_Nitr[1][i] >= 13.3 and Rio.PH <= 7.5) or self.cenario.Y_DBO[2][i] < 4:
+                for i in range(len(self.cenario.Y_Namon)):
+                    if (self.cenario.Y_Namon[i] >= 13.3 and Rio.PH <= 7.5) or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 13.3 com pH <= 7.5, ou OD < 4
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 5.6 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_DBO[2][i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 5.6 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 5.6 com 7.5 <= pH <= 8.0, ou OD < 4
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 2.2 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_DBO[2][i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 2.2 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 2.2 com 8.0 <= pH <= 8.5, ou OD < 4
                         return False
-                    elif (self.cenario.Y_Nitr[1][i] >= 1.0 and Rio.PH > 8.5) or self.cenario.Y_DBO[2][i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 1.0 and Rio.PH > 8.5) or self.cenario.Y_OD[i] < 4:
                         # Se Namon >= 1.0 com pH > 8.5, ou OD < 4
                         return False
             return True
 
     # Metodo que calcula a funcao objetivo com base no valor da equacao pre estabelecido
-    def avalia_func_objetivo(self, matriz_contribuicoes, matriz_reducao_pontual, numFuncao, vetor_pesos_pontual, vetor_pesos_difusa, scs, ef_minima):
-        vazoes = []
+    def avalia_func_objetivo(self, matriz_contribuicoes, numFuncao, vetor_pesos_pontual, vetor_pesos_difusa, scs):
         cargas = []
         valor_funcao = 0
         carga_media = 0

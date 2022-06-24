@@ -79,4 +79,51 @@ class Leitura (object):
         for j in range(8,12):
             vetor_pesos_difusa.append(matriz_brkga[1][j])
 
-        return [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa]      
+        return [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa] 
+    
+    @staticmethod        
+    def ler(Caminho):
+        leitor = open(Caminho) 
+        leitor.readline() 
+        matriz = []
+        
+        for x in leitor: 
+            cn = x.split(' ')
+            for i in range(len(cn)): 
+                cn[i] = float(cn[i]) 
+            matriz.append(cn)
+        
+        return matriz
+
+    @staticmethod
+    def ler_hidro(Caminho):
+        leitor = open(Caminho)  
+        leitor.readline()
+        matriz = []
+        
+        tam_celula = float(leitor.readline().split(' ')[0])
+        fator = float(leitor.readline().split(' ')[0])
+
+        for x in leitor:   
+            cn = x.split(' ') 
+            for i in range(len(cn)): 
+                cn[i] = float(cn[i]) 
+            matriz.append(cn)
+        
+        return [matriz,tam_celula,fator]
+    
+    # Metodo que le o arquivo de CME
+    @staticmethod
+    def ler_cme(Caminho):
+        leitor = open(Caminho) 
+        leitor.readline()  
+        matriz = []
+        
+        for x in leitor:  
+            uso = x.split(' ')  
+            for i in range(len(uso)):  
+                if i != 1:
+                    uso[i] = float(uso[i])  
+            matriz.append(uso)
+
+        return matriz

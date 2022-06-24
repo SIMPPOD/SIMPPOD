@@ -2,7 +2,6 @@
 # Modulo: Sub_bacia
 
 # Importacao de bibliotecas
-from TC import TC
 from Constantes import Constantes
 
 # Definicao da classe
@@ -33,27 +32,34 @@ class Sub_bacia(object):
         self.Cs = (1-fator)*cs
 
     # METODOS
-
-    def imprime(self):
-        print("Parametros da Sub " + str(self.ID))
-        print("N_rio: " + str(self.N_rio) + " Extensao: " + str(self.extensao))
-        print("Area: " + str(self.Area) + " Qdist: " + str(self.Q_distribuida) + " Qabs: " + str(
-            self.Q_absoluta) + " Qacum: " + str(self.Q_acumulada) + " Pe: " + str(self.Pe) + " S: " + str(
-            self.S) + " Tp: " + str(self.Tp) + " Tc: " + str(self.Tc))
-        print("CME's: " + str(self.CME_DBO) + " " + str(self.CME_NTK) + " " + str(self.CME_NOX) + " " + str(
-            self.CME_PINORG))
-
     def visita_sub(self):
         self.Visitada = True
 
     def calcula_param(self, L, s, A, C, P, CN):
-        Tc = TC()
         self.S = self.calcula_S(CN)
         self.Pe = self.calcula_Pe(P)
-        self.Tc = Tc.calcula_Tc(L, s, A, C)
+        self.Tc = self.calcula_Tc(L, s, A, C)
         self.Tp = self.calcula_Tp()
         self.Q_absoluta = self.calcula_Q(self.Pe, self.Tp, A)
         self.Q_acumulada = self.Q_absoluta
+
+    @staticmethod
+    def calcula_Tc(L, s, A, C):
+        if A < 50:
+            s = s*1000  # passa de m/m para m/km
+            if C == 1:
+                Tc = 0.00167 * ((L / (s ** 0.5)) ** 0.7)
+            else:
+                Tc = 0.00024 * ((L / (s ** 0.5)) ** 0.7)
+        elif 140 < A < 930:
+            s = s*1000
+            Tc = 21.88 * (A ** 0.41) * s ** (-0.17)
+            Tc = Tc/60
+        else:
+            L = L/1000  # passa pra km
+            Tc = 20.17 * ((L / (s ** 0.5)) ** 0.5)
+            Tc = Tc/60        
+        return Tc
 
     def calcula_Pe(self, P):
         if P > 0.2 * self.S:

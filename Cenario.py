@@ -9,18 +9,23 @@ def converte_float(valor):
 class Cenario:
 
     # CONSTRUTOR
-    def __init__(self, Y_DBO, Y_Nitr, Y_Fosf, Amonia, PerfilK2, PerfilKd, PerfilQ, PerfilV, PerfilH, PerfilCs, PerfilTempo, matriz_contribuicoes):
+    def __init__(self, Y_DBO, Y_OD, Y_Norg, Y_Namon, Y_Nnitri, Y_Nnitra, Y_Porg, Y_Pinorg, Amonia, PerfilK2, PerfilKd, PerfilQ, PerfilV, PerfilH, PerfilCs, PerfilTempo, matriz_contribuicoes):
         # Valores calculados em Euler
-        self.Y_DBO = Y_DBO  # Matriz [DBO, deficit de OD, OD]
-        self.Y_Nitr = Y_Nitr  # Matriz [NORG, NAMON, NNITRI, NNITRA]
-        self.Y_Fosf = Y_Fosf  # Matriz [PORG, PINORG]
+        self.Y_DBO = Y_DBO 
+        self.Y_OD = Y_OD
+        self.Y_Norg = Y_Norg
+        self.Y_Namon = Y_Namon
+        self.Y_Nnitri = Y_Nnitri
+        self.Y_Nnitra = Y_Nnitra
+        self.Y_Porg = Y_Porg
+        self.Y_Pinorg = Y_Pinorg
         self.Amonia = Amonia  # Matriz [Amonia livre, Amonia ionizada]
-        self.PerfilK2 = PerfilK2  # Vetor [K2]
-        self.PerfilKd = PerfilKd  # Vetor [Kd]
-        self.PerfilQ = PerfilQ  # Vetor [Q]
-        self.PerfilV = PerfilV  # Vetor [V]
-        self.PerfilH = PerfilH  # Vetor [H]
-        self.PerfilCs = PerfilCs  # Vetor [Cs]
+        self.PerfilK2 = PerfilK2 
+        self.PerfilKd = PerfilKd  
+        self.PerfilQ = PerfilQ  
+        self.PerfilV = PerfilV 
+        self.PerfilH = PerfilH  
+        self.PerfilCs = PerfilCs 
         self.matriz_contribuicoes = matriz_contribuicoes
         self.sub_bacias = []  # Matriz [DBO,Cs,NTK,NOx,Pinorg,Qacumulada,Qdistribuida,TC,Jusante,Visitada,ID]
         self.matriz_cargas = []  # Matriz [Carga DBO, Carga NTK, Carga NOx, Carga Pinorg]
@@ -28,65 +33,66 @@ class Cenario:
 
     # METODOS
     
-    # Metodo que escreve a matriz Y_DBO
     def Escreve_DBO(self, caminho):
         arq = open(caminho, "a+")
-        
-        # Escrita do DBO
         arq.write("Concentração de DBO (mg/L): \n")
-        for i in range(len(self.Y_DBO[0])):
-            arq.write(converte_float(str(self.Y_DBO[0][i])))
-            if i != (len(self.Y_DBO[0])-1):
+
+        for i in range(len(self.Y_DBO)):
+            arq.write(converte_float(str(self.Y_DBO[i])))
+            if i != (len(self.Y_DBO)-1):
                 arq.write(";")
-        
-        # Escrita do deficit de OD
-        arq.write("\nDéficit de OD (mg/L): \n")
-        for i in range(len(self.Y_DBO[1])): 
-            arq.write(converte_float(str(self.Y_DBO[1][i])))
-            if i != (len(self.Y_DBO[1])-1):
-                arq.write(";")
-        
-        # Escrita do OD
-        arq.write("\nConcentração de OD (mg/L): \n")
-        for i in range(len(self.Y_DBO[2])):
-            arq.write(converte_float(str(self.Y_DBO[2][i]))) 
-            if i != (len(self.Y_DBO[2])-1):
-                arq.write(";") 
         arq.write("\n") 
-    
-    # Metodo que escreve a matriz Y_Nitr
-    def Escreve_Nitr(self, caminho):
+
+    def Escreve_OD(self, caminho):
         arq = open(caminho, "a+")
+        arq.write("Concentração de OD (mg/L): \n")
 
-        # Escrita do nitrogenio organico
-        arq.write("N-Orgânico (mg/L): \n")
-        for i in range(len(self.Y_Nitr[0])):
-            arq.write(converte_float(str(self.Y_Nitr[0][i])))
-            if i != (len(self.Y_Nitr[0])-1):
-                arq.write(";")
-        
-        # Escrita da amonia total
-        arq.write("\nN-Amônia Total (mg/L): \n")
-        for i in range(len(self.Y_Nitr[1])): 
-            arq.write(converte_float(str(self.Y_Nitr[1][i]))) 
-            if i != (len(self.Y_Nitr[1])-1):  
+        for i in range(len(self.Y_OD)):
+            arq.write(converte_float(str(self.Y_OD[i]))) 
+            if i != (len(self.Y_OD)-1):
                 arq.write(";") 
+        arq.write("\n")
 
-        # Escrita do nitrito
-        arq.write("\nN-Nitrito (mg/L): \n")
-        for i in range(len(self.Y_Nitr[2])):
-            arq.write(converte_float(str(self.Y_Nitr[2][i]))) 
-            if i != (len(self.Y_Nitr[2])-1):
-                arq.write(";")
-        
-        # Escrita do nitrato
-        arq.write("\nN-Nitrato (mg/L): \n")
-        for i in range(len(self.Y_Nitr[3])):
-            arq.write(converte_float(str(self.Y_Nitr[3][i])))
-            if i != (len(self.Y_Nitr[3])-1): 
+    def Escreve_Norg(self, caminho):
+        arq = open(caminho, "a+")
+        arq.write("N-Orgânico (mg/L): \n")
+
+        for i in range(len(self.Y_Norg)):
+            arq.write(converte_float(str(self.Y_Norg[i]))) 
+            if i != (len(self.Y_Norg)-1):
+                arq.write(";") 
+        arq.write("\n")
+    
+    def Escreve_Namon(self, caminho):
+        arq = open(caminho, "a+")
+        arq.write("N-Amônia Total (mg/L): \n")
+
+        for i in range(len(self.Y_Namon)):
+            arq.write(converte_float(str(self.Y_Namon[i]))) 
+            if i != (len(self.Y_Namon)-1):
+                arq.write(";") 
+        arq.write("\n")
+
+    def Escreve_Nnitri(self, caminho):
+        arq = open(caminho, "a+")
+        arq.write("N-Nitrito (mg/L): \n")
+
+        for i in range(len(self.Y_Nnitri)):
+            arq.write(converte_float(str(self.Y_Nnitri[i]))) 
+            if i != (len(self.Y_Nnitri)-1):
+                arq.write(";") 
+        arq.write("\n")
+    
+    def Escreve_Nnitra(self, caminho):
+        arq = open(caminho, "a+")
+        arq.write("N-Nitrato (mg/L): \n")
+
+        for i in range(len(self.Y_Nnitra)):
+            arq.write(converte_float(str(self.Y_Nnitra[i]))) 
+            if i != (len(self.Y_Nnitra)-1):
                 arq.write(";") 
         arq.write("\n") 
-    
+       
     # Metodo que escreve a matriz Amonia
     def Escreve_Amonia(self, caminho):
         arq = open(caminho, "a+")
@@ -108,21 +114,23 @@ class Cenario:
         arq.write("\n")
 
     # Metodo que escreve a matriz Y_Fosf
-    def Escreve_Fosf(self, caminho):
+    def Escreve_Porg(self, caminho):
         arq = open(caminho, "a+") 
-
-        # Escrita do fosforo organico
         arq.write("Fósforo Orgânico (mg/L): \n")
-        for i in range(len(self.Y_Fosf[0])):
-            arq.write(converte_float(str(self.Y_Fosf[0][i]))) 
-            if i != (len(self.Y_Fosf[0])-1):
-                arq.write(";") 
 
-        # Escrita do fosforo inorganico
-        arq.write("\nFósforo Inorgânico (mg/L): \n")
-        for i in range(len(self.Y_Fosf[1])):
-            arq.write(converte_float(str(self.Y_Fosf[1][i]))) 
-            if i != (len(self.Y_Fosf[1])-1):
+        for i in range(len(self.Y_Porg)):
+            arq.write(converte_float(str(self.Y_Porg[i]))) 
+            if i != (len(self.Y_Porg)-1):
+                arq.write(";") 
+        arq.write("\n")
+    
+    def Escreve_Pinorg(self, caminho):
+        arq = open(caminho, "a+") 
+        arq.write("Fósforo Inorgânico (mg/L): \n")
+
+        for i in range(len(self.Y_Pinorg)):
+            arq.write(converte_float(str(self.Y_Pinorg[i]))) 
+            if i != (len(self.Y_Pinorg)-1):
                 arq.write(";") 
         arq.write("\n")
     
@@ -224,10 +232,15 @@ class Cenario:
     def Escreve_saida_QualUFMG(self, caminho, tam_rio, tam_cel):
         # Escrita das constantes para o QUAL_UFMG
         self.Escreve_Extensao(caminho, tam_rio, tam_cel) 
-        self.Escreve_DBO(caminho)  
-        self.Escreve_Nitr(caminho) 
+        self.Escreve_DBO(caminho)
+        self.Escreve_OD(caminho)
+        self.Escreve_Norg(caminho) 
+        self.Escreve_Namon(caminho) 
+        self.Escreve_Nnitri(caminho)
+        self.Escreve_Nnitra(caminho) 
         self.Escreve_Amonia(caminho) 
-        self.Escreve_Fosf(caminho) 
+        self.Escreve_Porg(caminho)
+        self.Escreve_Pinorg(caminho) 
         self.Escreve_K2(caminho)
         self.Escreve_Kd(caminho)  
         self.Escreve_Q(caminho) 

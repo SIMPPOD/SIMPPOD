@@ -64,30 +64,37 @@ class Rio(object):
     # METODOS
 
     # Metodo que usa a equacao de mistura do OD
-    def eq_mistura_OD(self, DBOur, ODr, DBO5e, ODe, Qr, Qe, Cs):
-        C0 = ((Qr * ODr) + (Qe * ODe) + (self.ODinc * self.Qinc)) / (Qr + Qe + self.Qinc)
-        D0 = Cs - C0
-        L0 = ((Qr * DBOur) + (Qe * DBO5e) + (self.DBOinc * self.Qinc)) / (Qr + Qe + self.Qinc)
-        vet_ini = [[L0], [D0], [C0]]
-        return vet_ini
-
+    def eq_mistura_DBO(self, DBOur, DBO5e, Qr, Qe):
+        return ((Qr * DBOur) + (Qe * DBO5e) + (self.DBOinc * self.Qinc)) / (Qr + Qe + self.Qinc)
+    
+    def eq_mistura_OD(self, ODr, ODe, Qr, Qe):
+        return ((Qr * ODr) + (Qe * ODe) + (self.ODinc * self.Qinc)) / (Qr + Qe + self.Qinc)
+    
     # Metodo que usa a equacao de mistura do nitrogenio
     @staticmethod
-    def eq_mistura_Nitr(NORGr, NAMONr, NNITRIr, NNITRAr, NORGe, NAMONe, NNITRIe, NNITRAe, Qr, Qe):
-        NORG0 = ((NORGr * Qr) + (NORGe * Qe)) / (Qr + Qe)
-        NAMON0 = ((NAMONr * Qr) + (NAMONe * Qe)) / (Qr + Qe)
-        NNITRI0 = ((NNITRIr * Qr) + (NNITRIe * Qe)) / (Qr + Qe)
-        NNITRA0 = ((NNITRAr * Qr) + (NNITRAe * Qe)) / (Qr + Qe)
-        vet_ini = [[NORG0], [NAMON0], [NNITRI0], [NNITRA0]]
-        return vet_ini
+    def eq_mistura_Norg(NORGr, NORGe, Qr, Qe):
+        return ((NORGr * Qr) + (NORGe * Qe)) / (Qr + Qe)
+
+    @staticmethod
+    def eq_mistura_Namon(NAMONr, NAMONe, Qr, Qe):
+        return ((NAMONr * Qr) + (NAMONe * Qe)) / (Qr + Qe)
+
+    @staticmethod
+    def eq_mistura_Nnitri(NNITRIr, NNITRIe, Qr, Qe):
+        return ((NNITRIr * Qr) + (NNITRIe * Qe)) / (Qr + Qe)
+
+    @staticmethod
+    def eq_mistura_Nnitra(NNITRAr, NNITRAe, Qr, Qe):
+        return ((NNITRAr * Qr) + (NNITRAe * Qe)) / (Qr + Qe)
 
     # Metodo que usa a equacao de mistura do fosforo
     @staticmethod
-    def eq_mistura_Fosf(PORGr, PINORGr, PORGe, PINORGe, Qr, Qe):
-        PORG0 = ((PORGr * Qr) + (PORGe * Qe)) / (Qr + Qe)
-        PINORG0 = ((PINORGr * Qr) + (PINORGe * Qe)) / (Qr + Qe)
-        vet_ini = [[PORG0], [PINORG0]]
-        return vet_ini
+    def eq_mistura_Porg(PORGr, PORGe, Qr, Qe):
+        return ((PORGr * Qr) + (PORGe * Qe)) / (Qr + Qe)
+
+    @staticmethod
+    def eq_mistura_Pinorg(PINORGr, PINORGe, Qr, Qe):
+        return ((PINORGr * Qr) + (PINORGe * Qe)) / (Qr + Qe)
 
     def Concatena_matrizes(self, matriz_difusa, matriz_contribuicoes, Cs):
         matriz_final = []

@@ -5,7 +5,6 @@
 from QUAL_UFMG import QUAL_UFMG
 from SCS import SCS
 from Leitura import Leitura
-from Leitura_difusa import Leitura_difusa
 from Main import Main_brkga
 
 import tkinter
@@ -340,7 +339,7 @@ def Muda_tela(janela_inicial, novo_frame):
     janela_inicial = novo_frame
     janela_inicial.place(x=0, y=0)
 
-def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, classe, modo_otimizacao):
+def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, modo_otimizacao):
     for i in range(len(vetor_caminhos)):
         vetor_caminhos[i] = list(vetor_caminhos[i])
 
@@ -356,7 +355,7 @@ def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, 
         for i in range(len(vetor_caminhos[5])):
             [rio, matriz_contribuicoes, matriz_reducoes, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = qual_ufmg.constroi_param_ini(vetor_caminhos[4][i],
                                                                                                                vetor_caminhos[5][i], False, "",
-                                                                                                               "", "", "", classe)
+                                                                                                               "", "", "")
             # qual_ufmg.constroi_param_ini(pontual, constantes, simula_difusa, cn, hidro, cme, usos)
 
             cenario_bpontual = qual_ufmg.executa(rio, matriz_contribuicoes, matriz_reducoes, False, [], scs, None, matriz_tipo_contribuicoes)
@@ -405,7 +404,7 @@ def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, 
                                                                                                                vetor_caminhos[2][i],
                                                                                                                vetor_caminhos[0][i],
                                                                                                                vetor_caminhos[1][i],
-                                                                                                               vetor_caminhos[3][i], classe)
+                                                                                                               vetor_caminhos[3][i])
             # qual_ufmg.constroi_param_ini(pontual, constantes, simula_difusa, cn, hidro, cme, usos)
 
             cenario_bdifuso = qual_ufmg.executa(rio, matriz_contribuicoes, matriz_reducoes, True, [], scs, None, matriz_tipo_contribuicoes)
@@ -450,7 +449,7 @@ def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, 
                                                                                                                vetor_caminhos[2][i],
                                                                                                                vetor_caminhos[0][i],
                                                                                                                vetor_caminhos[1][i],
-                                                                                                               vetor_caminhos[3][i], classe)
+                                                                                                               vetor_caminhos[3][i])
             # qual_ufmg.constroi_param_ini(pontual, constantes, simula_difusa, cn, hidro, cme, usos)
 
             cenario_bdifuso = qual_ufmg.executa(rio, matriz_contribuicoes, matriz_reducoes, True, [], scs, None, matriz_tipo_contribuicoes)
@@ -463,7 +462,7 @@ def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, 
             # CRIACAO DO CENARIO BASE PONTUAL
             [rio, matriz_contribuicoes, matriz_reducoes, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = qual_ufmg.constroi_param_ini(vetor_caminhos[4][i],
                                                                                                            vetor_caminhos[5][i], False, "",
-                                                                                                           "", "", "", classe)
+                                                                                                           "", "", "")
             del scs  # Parametro nulo
 
             cenario_bpontual = qual_ufmg.executa(rio, matriz_contribuicoes, matriz_reducoes, False, [], [], None, matriz_tipo_contribuicoes)
@@ -601,7 +600,6 @@ def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, 
 
 # Metodo que define a janela para escolha de arquivos e pasta para simulacao
 def Janela_simulacao(janela_inicial, Tela):
-    classe = IntVar()
     modo_simulacao = IntVar()
 
     # Frame
@@ -665,7 +663,6 @@ def Janela_Simula_Qualidade_Agua_Modo(janela_inicial, Tela, simula_pontual, simu
     modo_otimizacao.set(0)
     modo_execucao = StringVar()
     modo_execucao.set("1"+str(simula_pontual.get())+str(simula_difuso.get()))
-    classe = IntVar()
 
     vetor_caminhos = ["", "", "", "", "", "", ""]
     diretorio_saidas = StringVar()
@@ -677,7 +674,7 @@ def Janela_Simula_Qualidade_Agua_Modo(janela_inicial, Tela, simula_pontual, simu
     label_saidas = Label(canvas_saida, width=70, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
     botao_saidas = Button(canvas_saida, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
     botao_reset_saida = Button(canvas_saida, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
-    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, classe, modo_otimizacao))
+    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao))
 
     canvas_entradas.place(x=0, y=60)
     canvas_saida.place(x=0, y=515)
@@ -686,12 +683,6 @@ def Janela_Simula_Qualidade_Agua_Modo(janela_inicial, Tela, simula_pontual, simu
     botao_saidas.place(x=650, y=4)
     botao_reset_saida.place(x=700, y=4)
     botao_executa.place(x=550, y=560)
-
-    #label_classe = Label(canvas_entradas, text="Selecione a classe do rio:", bg='#94B7D5', font=('Arial', '12'))
-    #classe1 = Radiobutton(canvas_entradas, text="Classe 1", bg='#94B7D5', variable=classe, value=1)
-    #classe2 = Radiobutton(canvas_entradas, text="Classe 2", bg='#94B7D5', variable=classe, value=2)
-    #classe3 = Radiobutton(canvas_entradas, text="Classe 3", bg='#94B7D5', variable=classe, value=3)
-    #classe4 = Radiobutton(canvas_entradas, text="Classe 4", bg='#94B7D5', variable=classe, value=4)
 
     texto = Label(canvas_entradas, text="", bg='#94B7D5', font=('Arial', '12'))
 
@@ -714,11 +705,6 @@ def Janela_Simula_Qualidade_Agua_Modo(janela_inicial, Tela, simula_pontual, simu
         botao_entrada_constantes.place(x=650, y=82)
         botao_reset_pontual.place(x=700, y=50)
         botao_reset_constantes.place(x=700, y=82)
-        #label_classe.place(x=6, y=112)
-        #classe1.place(x=6, y=137)
-        #classe2.place(x=106, y=137)
-        #classe3.place(x=206, y=137)
-        #classe4.place(x=306, y=137)
 
         Muda_tela(janela_inicial, frame_simulacao)
     
@@ -769,11 +755,6 @@ def Janela_Simula_Qualidade_Agua_Modo(janela_inicial, Tela, simula_pontual, simu
         botao_reset_pontual.place(x=700, y=178)
         botao_entrada_constantes.place(x=650, y=210)
         botao_reset_constantes.place(x=700, y=210)
-        #label_classe.place(x=6, y=240)
-        #classe1.place(x=6, y=265)
-        #classe2.place(x=106, y=265)
-        #classe3.place(x=206, y=265)
-        #classe4.place(x=306, y=265)
 
         Muda_tela(janela_inicial, frame_simulacao)
     
@@ -834,7 +815,6 @@ def Janela_Simula_Otimizacao(janela_inicial, Tela, modo_otimizacao):
 def Janela_Simula_Otimizacao_Modo(janela_inicial, Tela, modo_simulacao, modo_otimizacao):
     modo_execucao = StringVar()
     modo_execucao.set("2"+str(modo_simulacao.get()))
-    classe = IntVar()
 
     vetor_caminhos = ["", "", "", "", "", "", ""]
     diretorio_saidas = StringVar()
@@ -846,7 +826,7 @@ def Janela_Simula_Otimizacao_Modo(janela_inicial, Tela, modo_simulacao, modo_oti
     label_saidas = Label(canvas_saida, width=70, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
     botao_saidas = Button(canvas_saida, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
     botao_reset_saida = Button(canvas_saida, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
-    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, classe, modo_otimizacao))
+    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao))
 
     canvas_entradas.place(x=0, y=60)
     canvas_saida.place(x=0, y=515)
@@ -855,12 +835,6 @@ def Janela_Simula_Otimizacao_Modo(janela_inicial, Tela, modo_simulacao, modo_oti
     botao_saidas.place(x=650, y=4)
     botao_reset_saida.place(x=700, y=4)
     botao_executa.place(x=550, y=560)
-
-    #label_classe = Label(canvas_entradas, text="Selecione a classe do rio:", bg='#94B7D5', font=('Arial', '12'))
-    #classe1 = Radiobutton(canvas_entradas, text="Classe 1", bg='#94B7D5', variable=classe, value=1)
-    #classe2 = Radiobutton(canvas_entradas, text="Classe 2", bg='#94B7D5', variable=classe, value=2)
-    #classe3 = Radiobutton(canvas_entradas, text="Classe 3", bg='#94B7D5', variable=classe, value=3)
-    #classe4 = Radiobutton(canvas_entradas, text="Classe 4", bg='#94B7D5', variable=classe, value=4)
 
     texto = Label(canvas_entradas, text="", bg='#94B7D5', font=('Arial', '12'))
 
@@ -894,11 +868,6 @@ def Janela_Simula_Otimizacao_Modo(janela_inicial, Tela, modo_simulacao, modo_oti
         botao_reset_pontual.place(x=700, y=50)
         botao_reset_constantes.place(x=700, y=82)
         botao_reset_otimizacao.place(x=700, y=114)
-        #label_classe.place(x=6, y=144)
-        #classe1.place(x=6, y=169)
-        #classe2.place(x=106, y=169)
-        #classe3.place(x=206, y=169)
-        #classe4.place(x=306, y=169)
 
         Muda_tela(janela_inicial, frame_simulacao)
     
@@ -956,11 +925,6 @@ def Janela_Simula_Otimizacao_Modo(janela_inicial, Tela, modo_simulacao, modo_oti
         botao_reset_constantes.place(x=700, y=210)
         botao_entrada_otimizacao.place(x=650, y=242)
         botao_reset_otimizacao.place(x=700, y=242)
-        #label_classe.place(x=6, y=272)
-        #classe1.place(x=6, y=297)
-        #classe2.place(x=106, y=297)
-        #classe3.place(x=206, y=297)
-        #classe4.place(x=306, y=297)
 
         Muda_tela(janela_inicial, frame_simulacao)
     
@@ -980,7 +944,7 @@ def Janela_Estima_Cargas_Difusas(janela_inicial, Tela, modo_execucao):
     label_saidas = Label(canvas_saida, width=70, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
     botao_saidas = Button(canvas_saida, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
     botao_reset_saida = Button(canvas_saida, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
-    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, None, modo_otimizacao))
+    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao))
 
     canvas_entradas.place(x=0, y=60)
     canvas_saida.place(x=0, y=515)
@@ -1038,7 +1002,7 @@ def Janela_Seleciona_Simulacao(janela_inicial, Tela, modo_simulacao):
     else:
         Janela_Erro()
 
-def Checa_Parametros_Entrada(vetor_caminhos, diretorio_saidas, modo_execucao, classe):
+def Checa_Parametros_Entrada(vetor_caminhos, diretorio_saidas, modo_execucao):
     if diretorio_saidas.get() == "":
         Janela_Erro()
         return 1
@@ -1057,13 +1021,10 @@ def Checa_Parametros_Entrada(vetor_caminhos, diretorio_saidas, modo_execucao, cl
     elif modo_execucao.get() == "22" and (vetor_caminhos.__contains__("")):
         Janela_Erro()
         return 1
-    #elif classe is not None and classe.get() == 0:
-        #Janela_Erro()
-        #return 1
     return 0             
 
-def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, classe, modo_otimizacao):
-    if Checa_Parametros_Entrada(vetor_caminhos, diretorio_saidas, modo_execucao, classe) == 0:
+def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao):
+    if Checa_Parametros_Entrada(vetor_caminhos, diretorio_saidas, modo_execucao) == 0:
         diretorio_saidas = diretorio_saidas.get()
 
         frame_saidas = Frame(Tela, height=600, width=800, bg='#94B7D5')
@@ -1441,7 +1402,7 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
         [cenario_base_pontual, cenario_otimizado_pontual, cenario_base_difuso, cenario_otimizado_difuso,
         historico_foP, historico_fo, historico_tempo_iteracoesP, historico_tempo_iteracoes,
         historico_filhos_invalidosP, historico_filhos_invalidos, iteracao_versao_rapidaP, iteracao_versao_rapida,
-        tam_rio, tam_cel, ph, perfilQP, perfilQ] = executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_textos, classe, modo_otimizacao)
+        tam_rio, tam_cel, ph, perfilQP, perfilQ] = executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_textos, modo_otimizacao)
 
         if modo_execucao.get() != 2:
             restricao_DBO = cria_vetor_restricao(0, tam_rio, tam_cel, ph, classe)
@@ -1456,28 +1417,28 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
             botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
 
             # cenario base pontual
-            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
         
         elif modo_execucao.get() == "101":
             # cenario vazao
             botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
 
             # cenario base difuso
-            botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
         
         elif modo_execucao.get() == "111":
             # cenario vazao
@@ -1485,24 +1446,24 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
             botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
 
             # cenario base pontual
-            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG"
+            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG"
 
             # cenario base difuso
-            botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difuso[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
         
         elif modo_execucao.get() == "21":
             # cenario fo
@@ -1518,24 +1479,24 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
             botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
 
             # cenario base pontual
-            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual.Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual.Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
             # cenario otimizado pontual
-            botao_cop_DBO["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cop_OD["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cop_NORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cop_NAMON["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cop_NNITR["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cop_NNITRA["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cop_PORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cop_PINORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cop_DBO["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cop_OD["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cop_NORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cop_NAMON["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cop_NNITR["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cop_NNITRA["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cop_PORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cop_PINORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
         elif modo_execucao.get() == "22":
             # cenario fo
@@ -1555,44 +1516,44 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
             botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
 
             # cenario base pontual
-            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual.Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual.Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
             # cenario otimizado pontual
-            botao_cop_DBO["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cop_OD["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cop_NORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cop_NAMON["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cop_NNITR["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cop_NNITRA["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cop_PORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cop_PINORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cop_DBO["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cop_OD["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cop_NORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cop_NAMON["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cop_NNITR["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cop_NNITRA["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cop_PORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cop_PINORG["command"] = partial(gera_grafico, cenario_otimizado_pontual.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
             # cenario base difuso
-            botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difuso.Y_DBO[0], 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difuso.Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difuso.Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difuso.Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difuso.Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difuso.Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difuso.Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difuso.Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difuso.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difuso.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difuso.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difuso.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difuso.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difuso.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difuso.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difuso.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
             # cenario otimizado difuso
-            botao_cod_DBO["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_DBO[0], 0,restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-            botao_cod_OD["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_DBO[2], 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-            botao_cod_NORG["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Nitr[0], 2, None, tam_cel, tam_rio, classe)  # NORG
-            botao_cod_NAMON["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Nitr[1], 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-            botao_cod_NNITR["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Nitr[2], 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-            botao_cod_NNITRA["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Nitr[3], 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-            botao_cod_PORG["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Fosf[0], 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-            botao_cod_PINORG["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Fosf[1], 7, None, tam_cel, tam_rio, classe)  # PINORG
+            botao_cod_DBO["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_DBO, 0,restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+            botao_cod_OD["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+            botao_cod_NORG["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+            botao_cod_NAMON["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+            botao_cod_NNITR["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+            botao_cod_NNITRA["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+            botao_cod_PORG["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+            botao_cod_PINORG["command"] = partial(gera_grafico, cenario_otimizado_difuso.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
 def Janela_inicial():
     Tela = Tk()

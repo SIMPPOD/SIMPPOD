@@ -72,7 +72,7 @@ class Otimizacao:
             caminho_cn = matriz_entradas[2]  # Entrada_CN.txt
             caminho_usos = matriz_entradas[3]  # Entrada_Usos.txt
 
-            [Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos, classe)
+            [Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos)
             del matriz_reducao_pontual  # Matriz nao utilizada
             ef_minima = []
 
@@ -117,7 +117,7 @@ class Otimizacao:
 
         else:
             print("Rodando otimização da poluição pontual...")
-            [Rio, matriz_contribuicoes, self.matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos, classe)
+            [Rio, matriz_contribuicoes, self.matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos)
             ef_minima = self.calcula_ef_minima(Rio, matriz_contribuicoes)
 
             cenario_sem_otimizacao = cenario_base.executa(Rio, matriz_contribuicoes, self.matriz_reducao_pontual, simula_difusa, [], scs, numFuncao, matriz_tipo_contribuicoes)

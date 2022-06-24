@@ -3,7 +3,7 @@
 
 # Importacao de bibliotecas
 from Sub_bacia import Sub_bacia
-from Leitura_difusa import Leitura_difusa
+from Leitura import Leitura
 
 def converte_float(valor):
     if valor.find("."):
@@ -16,7 +16,7 @@ class SCS(object):
     def __init__(self, caminho_cn, caminho_hidro, caminho_CME, caminho_usos):
         self.vetor_CN = []  # Vetor com calculos do CN
         self.vetor_vazoes = []
-        x = Leitura_difusa()
+        x = Leitura()
         matriz_CN = x.ler(caminho_cn)  # Entrada_CN.txt = [ID,Area,CN,Código]
         self.matriz_CME = x.ler_cme(caminho_CME)  # Entrada_CME.txt = [Codigo,Uso do Solo,CME_DBO,CME_NTK,CME_NOX,CME_PINORG]
         self.matriz_usos = x.ler(caminho_usos)  # Entrada_Usos.txt = [ID,Area_codigo,Codigo]

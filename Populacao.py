@@ -44,7 +44,7 @@ class Populacao:
                 individuo.exec_QualUFMG(qual_ufmg, Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, numFuncao, matriz_tipo_contribuicoes)  # Seta o cenario
 
             # Calcula a funcao objetivo com base no numFuncao
-            individuo.avalia_func_objetivo(matriz_contribuicoes, matriz_reducao_pontual, numFuncao, vetor_pesos_pontual, vetor_pesos_difusa, scs, self.ef_minima)
+            individuo.avalia_func_objetivo(matriz_contribuicoes, numFuncao, vetor_pesos_pontual, vetor_pesos_difusa, scs)
             # individuo.alelos = matriz tam_cromossomo x 4 (difusa), ou tam_cromossomo x 1 (nao difusa)
 
             self.lista_individuos.append(individuo)  # Acrescenta o individuo a populacao
@@ -281,7 +281,7 @@ class Populacao:
                         break
 
         # Calcula a funcao objetivo com base no numFuncao
-        filho.avalia_func_objetivo(matriz_contribuicoes, matriz_reducao_pontual, self.numFuncao, self.vetor_pesos_pontual, self.vetor_pesos_difusa, scs, self.ef_minima)
+        filho.avalia_func_objetivo(matriz_contribuicoes, self.numFuncao, self.vetor_pesos_pontual, self.vetor_pesos_difusa, scs)
 
         return [filho, filhos_invalidos]
 
@@ -302,7 +302,7 @@ class Populacao:
             mutante.exec_QualUFMG(qual_ufmg, Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, self.numFuncao, self.matriz_tipo_contribuicoes)  # Seta o cenario
 
         # Calcula a funcao objetivo com base no numFuncao
-        mutante.avalia_func_objetivo(matriz_contribuicoes, matriz_reducao_pontual, self.numFuncao, self.vetor_pesos_pontual, self.vetor_pesos_difusa, scs, self.ef_minima)
+        mutante.avalia_func_objetivo(matriz_contribuicoes, self.numFuncao, self.vetor_pesos_pontual, self.vetor_pesos_difusa, scs)
 
         return mutante
 

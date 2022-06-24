@@ -91,7 +91,7 @@ class Constantes:
 
         return K2
 
-    def set_constantes(self, tetaS, tetaD, teta2, tetaOA, tetaAN, tetaSPO, tetaOI, tetaSO, tetaNN, T, Q, H, v, Rio, tetaSamon, tetaSd):
+    def set_constantes(self, tetaS, tetaD, teta2, tetaOA, tetaAN, tetaSPO, tetaOI, tetaSO, tetaNN, T, Q, H, v, Rio, tetaSamon, tetaSd, Cs):
         self.Ks = self.correcao(self.Ks, tetaS, T, Tbase)
         self.Koa = self.correcao(self.Koa, tetaOA, T, Tbase)
         self.Kan = self.correcao(self.Kan, tetaAN, T, Tbase)
@@ -104,6 +104,7 @@ class Constantes:
         self.Kt = self.set_Kt(Rio.useK1, self.K1, self.Kd)
         self.Samon = self.correcao(self.Samon, tetaSamon, T, Tbase)
         self.Sd = self.correcao(self.Sd, tetaSd, T, Tbase)
+        self.Cs = Cs
 
     # Metodo que corrige o coeficiente de saturacao
     @staticmethod

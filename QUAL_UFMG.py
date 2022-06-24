@@ -24,7 +24,7 @@ class QUAL_UFMG(object):
     # METODOS
 
     @staticmethod
-    def constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos, classe):
+    def constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos):
         ler = Leitura()
 
         # Cria a matriz de contribuicoes
