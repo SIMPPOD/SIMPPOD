@@ -1,129 +1,115 @@
 # -*- coding: utf-8 -*-
 # Modulo: Leitura
+from pandas import read_excel
 
-# Definicao da classe
-class Leitura (object):
-    # METODOS
+# METODOS
 
-    # Metodo que le o arquivo Entrada_Pontual.txt
-    @staticmethod
-    def ler_contribuicao_pontual(Caminho):
-        leitor = open(Caminho)  
+# METODO DE LEITURA DO ARQUIVO ENTRADA PONTUAL
+@staticmethod
+def ler_entrada_pontual(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada Pontual")
 
-        leitor.readline()
-        leitor.readline()
-        leitor.readline()
+    matriz_contribuicoes = []
+    matriz_reducoes = [[], []]
+    matriz_tipo_contribuicoes = []
 
-        matriz_contribuicoes = []
-        matriz_reducoes = [[], []]
-        matriz_tipo_contribuicoes = []
-        
-        for x in leitor: 
-            contribuicao = x.split(' ')  
-            matriz_tipo_contribuicoes.append(contribuicao[-1][0])
-            for i in range(len(contribuicao)-1):  
-                contribuicao[i] = float(contribuicao[i]) 
-            if contribuicao[10] == 1:  # Se ExR for 1
-                if contribuicao[11] != 0:  # Se %R nao for 0
-                    contribuicao[11] = contribuicao[11]/100 
-                    matriz_reducoes[0].append(contribuicao[11])
-                matriz_reducoes[1].append(contribuicao[9])
-            matriz_contribuicoes.append(contribuicao)
-        
-        # matriz_reducoes[0] = vetor de %R
-        # matriz_reducoes[1] = vetor de N
-        # matriz_contribuicoes = matriz com vetores de contribuicoes
+    for i in range(df.shape[0]):
+        contribuicao = df.values[i]
+        matriz_tipo_contribuicoes.append(contribuicao[df.shape[1]-1])
+           
+        if contribuicao[10] == 1:  # Se ExR for 1
+            if contribuicao[11] != 0:  # Se %R nao for 0
+                contribuicao[11] = contribuicao[11]/100 
+                matriz_reducoes[0].append(contribuicao[11])
+            matriz_reducoes[1].append(contribuicao[9])
+        matriz_contribuicoes.append(contribuicao.tolist())
 
-        return [matriz_contribuicoes, matriz_reducoes, matriz_tipo_contribuicoes]
+    return [matriz_contribuicoes, matriz_reducoes, matriz_tipo_contribuicoes]
 
-    # Metodo que le o arquivo Entrada_Constantes.txt
-    @staticmethod       
-    def ler_constantes(Caminho):
-        leitor = open(Caminho) 
+# METODO DE LEITURA DO ARQUIVO ENTRADA CONSTANTES
+@staticmethod       
+def ler_entrada_constantes(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada Constantes")
 
-        constantes = []
-        for x in leitor:
-            leitura = x.split(' ')
-            constantes.append(float(leitura[0]))
+    constantes = []
 
-        return constantes
+    for i in range(df.shape[0]):
+        constante = df.values[i]
+        constantes.append(constante[1])
 
-    @staticmethod
-    def ler_tamanho_celula(Caminho):
-        leitor = open(Caminho)
-        leitor.readline() 
-        
-        x = leitor.readline().split(' ')
+    return constantes
 
-        return x[0]
+# METODO DE LEITURA DO ARQUIVO ENTRADA HIDRO
+@staticmethod
+def ler_entrada_hidro(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada Hidro")
+
+    matriz = []
     
-    # Leitura do arquivo Entrada_BRKGA.txt
-    @staticmethod
-    def ler_otimizacao(Caminho):
-        vetor_pesos_pontual = []
-        vetor_pesos_difusa = [] 
-        matriz_brkga = [] 
-
-
-        leitor_brkga = open(Caminho)
-        leitor_brkga.readline() 
-        
-        for x in leitor_brkga:
-            vetor_brkga = x.split(' ') 
-            for i in range(len(vetor_brkga)):
-                vetor_brkga[i] = float(vetor_brkga[i])
-            matriz_brkga.append(vetor_brkga)
-
-        for i in range(8,10):
-            vetor_pesos_pontual.append(matriz_brkga[0][i])
-        for j in range(8,12):
-            vetor_pesos_difusa.append(matriz_brkga[1][j])
-
-        return [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa] 
+    for i in range(df.shape[0]):
+        valores = df.values[i][:df.shape[1]-2]
+        matriz.append(valores.tolist())
     
-    @staticmethod        
-    def ler(Caminho):
-        leitor = open(Caminho) 
-        leitor.readline() 
-        matriz = []
-        
-        for x in leitor: 
-            cn = x.split(' ')
-            for i in range(len(cn)): 
-                cn[i] = float(cn[i]) 
-            matriz.append(cn)
-        
-        return matriz
+    fator = df.values[0, df.shape[1]-2]
+    tam_celula = df.values[0, df.shape[1]-1]
 
-    @staticmethod
-    def ler_hidro(Caminho):
-        leitor = open(Caminho)  
-        leitor.readline()
-        matriz = []
-        
-        tam_celula = float(leitor.readline().split(' ')[0])
-        fator = float(leitor.readline().split(' ')[0])
+    return [matriz,tam_celula,fator]
 
-        for x in leitor:   
-            cn = x.split(' ') 
-            for i in range(len(cn)): 
-                cn[i] = float(cn[i]) 
-            matriz.append(cn)
-        
-        return [matriz,tam_celula,fator]
-    
-    # Metodo que le o arquivo de CME
-    @staticmethod
-    def ler_cme(Caminho):
-        leitor = open(Caminho) 
-        leitor.readline()  
-        matriz = []
-        
-        for x in leitor:  
-            uso = x.split(' ')  
-            for i in range(len(uso)):  
-                if i != 1:
-                    uso[i] = float(uso[i])  
-            matriz.append(uso)
+# METODO DE LEITURA DO ARQUIVO ENTRADA CN
+@staticmethod        
+def ler_entrada_cn(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada CN")
 
-        return matriz
+    matriz = []
+
+    for i in range(df.shape[0]):
+        valores = df.values[i]   
+        matriz.append(valores.tolist())
+
+    return matriz
+
+# METODO DE LEITURA DO ARQUIVO ENTRADA CME
+@staticmethod
+def ler_entrada_cme(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada CME")
+
+    matriz = []
+
+    for i in range(df.shape[0]):
+        valores = df.values[i]
+        matriz.append(valores.tolist())
+
+    return matriz
+
+# METODO DE LEITURA DO ARQUIVO ENTRADA USOS
+@staticmethod        
+def ler_entrada_usos(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada Usos")
+
+    matriz = []
+
+    for i in range(df.shape[0]):
+        valores = df.values[i]    
+        matriz.append(valores.tolist())
+
+    return matriz
+
+# METODO DE LEITURA DO ARQUIVO ENTRADA OTIMIZAÇÃO
+@staticmethod
+def ler_entrada_otimizacao(arquivo):
+    df = read_excel(arquivo, sheet_name="Entrada Otimização")
+
+    vetor_pesos_pontual = []
+    vetor_pesos_difusa = [] 
+    matriz_brkga = [] 
+
+    for i in range(df.shape[0]):
+        valores = df.values[i]
+        matriz_brkga.append(valores.tolist())
+
+    for i in range(8,10):
+        vetor_pesos_pontual.append(matriz_brkga[0][i])
+    for j in range(8,12):
+        vetor_pesos_difusa.append(matriz_brkga[1][j])
+
+    return [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa] 

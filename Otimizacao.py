@@ -4,9 +4,8 @@
 # Importacao de bibliotecas
 from Populacao import Populacao
 from QUAL_UFMG import QUAL_UFMG
-from Leitura import Leitura
-import time
-import os
+from Leitura import *
+from time import time
 
 # Definicao da classe
 class Otimizacao:
@@ -39,15 +38,7 @@ class Otimizacao:
         return ef_minima
         
     # Metodo que executa o BRKGA
-    def executa(self, matriz_entradas, simula_difusa, classe, numFuncao, modo_otimizacao, diretorio_saida):
-        caminho_pontual = matriz_entradas[4]  # Entrada_Pontual.txt
-        caminho_constantes = matriz_entradas[5]  # Entrada_Constantes.txt
-        caminho_brkga = matriz_entradas[6]  # Entrada_BRKGA.txt
-        caminho_hidro = ''
-        caminho_cme = ''
-        caminho_cn = ''
-        caminho_usos = ''
-
+    def executa(self, matriz_entradas, simula_difusa, modo_otimizacao, tributarios, celula_entrada_tributarios):
         populacoes = []  # Lista de populacoes
         melhor_solucao = []
         melhores_solucoes = []  # Lista com melhores solucoes
@@ -57,30 +48,25 @@ class Otimizacao:
         historico_filhos_invalidos = []
         iteracao_versao_rapida = None
 
-        ler = Leitura()
-        [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa] = ler.ler_otimizacao(caminho_brkga)
+        [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa] = ler_entrada_otimizacao(matriz_entradas)
+        [FO_pontual, FO_difusa] = [matriz_brkga[0][6], matriz_brkga[1][6]]
 
         cenario_base = QUAL_UFMG()  # Objeto sem atributos
         
-        ini = time.time()
+        ini = time()
         
         if simula_difusa:
             print("Rodando otimização da poluição difusa...")
-            # Atribuicao dos arquivos
-            caminho_hidro = matriz_entradas[0]  # Entrada_Hidro.txt
-            caminho_cme = matriz_entradas[1]  # Entrada_CME.txt
-            caminho_cn = matriz_entradas[2]  # Entrada_CN.txt
-            caminho_usos = matriz_entradas[3]  # Entrada_Usos.txt
 
-            [Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos)
+            [Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(matriz_entradas, simula_difusa)
             del matriz_reducao_pontual  # Matriz nao utilizada
             ef_minima = []
 
-            cenario_sem_otimizacao = cenario_base.executa(Rio, matriz_contribuicoes, self.matriz_reducao_pontual, simula_difusa, [], scs, numFuncao, matriz_tipo_contribuicoes)
-
+            cenario_sem_otimizacao = cenario_base.executa(Rio, matriz_contribuicoes, self.matriz_reducao_pontual, simula_difusa, [], scs, FO_difusa, matriz_tipo_contribuicoes)
+            
             # Criação da população
             for i in range(int(matriz_brkga[1][1])):  # para cada populacao
-                aux = Populacao(matriz_brkga[1][7], matriz_brkga[1][0], len(scs.lista_subbacias), matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, ef_minima, matriz_brkga[1][6], True, vetor_pesos_pontual, vetor_pesos_difusa, scs, modo_otimizacao, matriz_tipo_contribuicoes)
+                aux = Populacao(matriz_brkga[1][7], matriz_brkga[1][0], len(scs.sub_bacias), matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, ef_minima, matriz_brkga[1][6], True, vetor_pesos_pontual, vetor_pesos_difusa, scs, modo_otimizacao, matriz_tipo_contribuicoes)
                 # aux = Populacao(pe, tam_populacao, tam_cromossomo, Entrada_Pontual.txt, Rio, cenario_base, matriz_reducao_pontual, ef_minima, funcao objetivo, simula_difusa, vetor_pesos_pontual, vetor_pesos_difusa, scs)
                 
                 aux.ordena_populacao()  # Populacao ordenada pela FO
@@ -109,32 +95,32 @@ class Otimizacao:
                         historico_fo_ordenadas.sort()
                         if 0.97*historico_fo_ordenadas[0] <= melhor_solucao.func_objetivo <= historico_fo_ordenadas[0]:
                             contagem = 1
-                            fim = time.time()
+                            fim_rapida = time()
                             iteracao_versao_rapida = k
                             print("Última iteração para versão rápida: " + str(k+1))
-                            self.gera_saida_rapida_difusa(diretorio_saida, cenario_sem_otimizacao, melhores_solucoes, fim-ini, tam_rio, tam_cel, vetor_invalidos)
+                            melhor_solucao_versao_rapida = melhores_solucoes[len(melhores_solucoes)-1]
+                            vetor_invalidos_rapida = vetor_invalidos
             print("Otimização da poluição difusa encerrada.")
 
         else:
             print("Rodando otimização da poluição pontual...")
-            [Rio, matriz_contribuicoes, self.matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos)
+            [Rio, matriz_contribuicoes, self.matriz_reducao_pontual, scs, tam_rio, tam_cel, ph, matriz_tipo_contribuicoes] = cenario_base.constroi_param_ini(matriz_entradas, simula_difusa)
             ef_minima = self.calcula_ef_minima(Rio, matriz_contribuicoes)
 
-            cenario_sem_otimizacao = cenario_base.executa(Rio, matriz_contribuicoes, self.matriz_reducao_pontual, simula_difusa, [], scs, numFuncao, matriz_tipo_contribuicoes)
-            
+            cenario_sem_otimizacao = cenario_base.executa(Rio, matriz_contribuicoes, self.matriz_reducao_pontual, simula_difusa, [], scs, FO_pontual, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios)
             for i in range(int(matriz_brkga[0][1])):  # para cada populacao
-                aux = Populacao(matriz_brkga[0][7], matriz_brkga[0][0], len(self.matriz_reducao_pontual[1]), matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, ef_minima, matriz_brkga[0][6], simula_difusa, vetor_pesos_pontual, vetor_pesos_difusa, scs, modo_otimizacao, matriz_tipo_contribuicoes)
+                aux = Populacao(matriz_brkga[0][7], matriz_brkga[0][0], len(self.matriz_reducao_pontual[1]), matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, ef_minima, matriz_brkga[0][6], simula_difusa, vetor_pesos_pontual, vetor_pesos_difusa, scs, modo_otimizacao, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios)
                 # aux = Populacao(pe, tam_populacao, tam_cromossomo, Entrada_Pontual.txt, Rio, cenario_base, matriz_reducao_pontual, ef_minima, funcao objetivo, simula_difusa, vetor_pesos_pontual, vetor_difusa, scs)
 
                 aux.ordena_populacao()  # Populacao ordenada pela FO
                 aux.set_melhor_inicial()  # Melhor individuo = Populacao[0]
                 populacoes.append(aux)  # populacoes = lista com populacoes criadas
                 print("Inválidos gerados na criação da população inicial pontual " + str(i+1) + ": " + str(aux.vetor_invalidos[0]))
-    
+
             for j in range(int(matriz_brkga[0][1])):  # para cada populacao
                 contagem = 0
                 for k in range(int(matriz_brkga[0][5])):  # k varia de 0 ao valor de niter
-                    [melhor_solucao, vetor_invalidos, tempo_iteracao, total_filhos_invalidos] = populacoes[j].gera_prox_geracao(matriz_brkga[0][2], matriz_brkga[0][3], matriz_brkga[0][4], matriz_brkga[0][7], matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, scs)
+                    [melhor_solucao, vetor_invalidos, tempo_iteracao, total_filhos_invalidos] = populacoes[j].gera_prox_geracao(matriz_brkga[0][2], matriz_brkga[0][3], matriz_brkga[0][4], matriz_brkga[0][7], matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, scs, tributarios, celula_entrada_tributarios)
                     # melhor_solucao = populacoes[j].gera_prox_geracao(NE, NC, NM, pe, Entrada_Pontual, Rio, cenario_base, matriz_reducao_pontual, scs)
                     print("Inválidos acumulados até a geração " + str(k+1) + ": " + str(vetor_invalidos))
 
@@ -151,49 +137,14 @@ class Otimizacao:
                         historico_fo_ordenadas.sort()
                         if 0.97*historico_fo_ordenadas[0] <= melhor_solucao.func_objetivo <= historico_fo_ordenadas[0]:
                             contagem = 1
-                            fim = time.time()
+                            fim_rapida = time()
                             iteracao_versao_rapida = k
                             print("Última iteração para versão rápida: " + str(k+1))
-                            self.gera_saida_rapida_pontual(diretorio_saida, cenario_sem_otimizacao, melhores_solucoes, fim-ini, tam_rio, tam_cel, vetor_invalidos)
+                            melhor_solucao_versao_rapida = melhores_solucoes[len(melhores_solucoes)-1]
+                            vetor_invalidos_rapida = vetor_invalidos
             print("Otimização da poluição pontual encerrada.")
 
-        fim = time.time()
-        return [cenario_sem_otimizacao, melhores_solucoes, populacoes, fim-ini, tam_rio, tam_cel, vetor_invalidos, historico_fo, historico_tempo_iteracoes, historico_filhos_invalidos, iteracao_versao_rapida, ph]
-
-    def gera_saida_rapida_pontual(self, diretorio_saida, cenario_base_pontual, melhores_solucoes, tempo, tam_rio, tam_cel, vetor_invalidos):
-        caminho_saida_brkga_pontual = diretorio_saida + "\Otimização-Poluição Pontual-Versão Rápida.csv"
-        caminho_saida_qual_ufmg_otimizado_pontual = diretorio_saida + "\Perfil de QA-Poluição Pontual Otimizada-Versão Rápida.csv"
-
-        self.checa_arquivo(diretorio_saida,"Otimização-Poluição Pontual-Versão Rápida.csv")
-        self.checa_arquivo(diretorio_saida,"Perfil de QA-Poluição Pontual Otimizada-Versão Rápida.csv")
-
-        matriz_saidas = [caminho_saida_brkga_pontual, None, caminho_saida_qual_ufmg_otimizado_pontual]  
-        
-        melhor_solucao = melhores_solucoes[len(melhores_solucoes)-1]
-        cenario_otimizado_pontual = melhor_solucao.cenario
-        melhor_solucao.Escreve_saida(matriz_saidas[0], tempo, vetor_invalidos)
-        cenario_otimizado_pontual.Escreve_saida_QualUFMG(matriz_saidas[2], tam_rio, tam_cel)
-    
-    def gera_saida_rapida_difusa(self, diretorio_saida, cenario_base_difuso, melhores_solucoes, tempo, tam_rio, tam_cel, vetor_invalidos):
-        caminho_saida_brkga_difuso = diretorio_saida + "\Otimização-Poluição Difusa-Versão Rápida.csv"
-        caminho_saida_qual_ufmg_otimizado_difuso = diretorio_saida + "\Perfil de QA-Poluição Difusa Otimizada-Versão Rápida.csv"
-        caminho_saida_pd_otimizado = diretorio_saida + "\Poluição Difusa e CME Ponderada-Cenário Otimizado-Versão Rápida.csv"
-
-        self.checa_arquivo(diretorio_saida,"Otimização-Poluição Difusa-Versão Rápida.csv")
-        self.checa_arquivo(diretorio_saida,"Perfil de QA-Poluição Difusa Otimizada-Versão Rápida.csv")
-        self.checa_arquivo(diretorio_saida,"Poluição Difusa e CME Ponderada-Cenário Otimizado-Versão Rápida.csv")
-
-        matriz_saidas = [0, 0, 0, caminho_saida_brkga_difuso, None,
-                         caminho_saida_qual_ufmg_otimizado_difuso, None, caminho_saida_pd_otimizado]  
-        
-        melhor_solucao = melhores_solucoes[len(melhores_solucoes)-1]
-        cenario_otimizado_difuso = melhor_solucao.cenario
-        melhor_solucao.Escreve_saida(matriz_saidas[3], tempo, vetor_invalidos)
-        cenario_otimizado_difuso.Escreve_saida_QualUFMG(matriz_saidas[5], tam_rio, tam_cel)
-        cenario_otimizado_difuso.Escreve_saida_PD(matriz_saidas[7])
-
-    @staticmethod
-    def checa_arquivo(diretorio_saidas, arquivo):
-        dir = os.listdir(diretorio_saidas)
-        if arquivo in dir:
-            os.remove('{}/{}'.format(diretorio_saidas, arquivo))
+        fim = time()
+        tempo = fim-ini
+        tempo_rapida = fim_rapida-ini
+        return [cenario_sem_otimizacao, melhores_solucoes, tempo, tempo_rapida, tam_rio, tam_cel, vetor_invalidos, vetor_invalidos_rapida, historico_fo, historico_tempo_iteracoes, historico_filhos_invalidos, iteracao_versao_rapida, ph, melhor_solucao_versao_rapida, Rio]

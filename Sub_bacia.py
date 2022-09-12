@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 # Modulo: Sub_bacia
 
-# Importacao de bibliotecas
-from Constantes import Constantes
-
 # Definicao da classe
 class Sub_bacia(object):
 
@@ -27,9 +24,8 @@ class Sub_bacia(object):
         self.CME_PINORG = 0
         self.Visitada = False
 
-        constantes = Constantes(None, None, None, None, None, None, None, None, None, None, None, None, None)
-        cs = constantes.corrige_Cs(Alt, T)
-        self.Cs = (1-fator)*cs
+        ODsat = (1-Alt/9450) * (14.652 - (0.41022 * T) + (0.007991 * (T ** 2)) - (0.000077774 * T ** 3))
+        self.ODsat = (1-fator)*ODsat
 
     # METODOS
     def visita_sub(self):
@@ -89,7 +85,7 @@ class Sub_bacia(object):
         if self.extensao != 1 or self.N_rio > len(matriz_difusa):
             if self.Q_distribuida > 0:
                 for i in range(int(self.extensao)):
-                    vetor_aux = [self.CME_DBO, self.Cs, self.CME_NTK, self.CME_NOX, self.CME_PINORG, self.Q_distribuida,
+                    vetor_aux = [self.CME_DBO, self.ODsat, self.CME_NTK, self.CME_NOX, self.CME_PINORG, self.Q_distribuida,
                                  self.N_rio + i]
                     matriz_difusa.append(vetor_aux)
         else:

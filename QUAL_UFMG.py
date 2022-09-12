@@ -9,14 +9,10 @@ do modelo
 """
 
 # Importacao de bibliotecas
-import sys
-from Constantes import Constantes
 from SCS import SCS
 from Euler import Euler
-from Leitura import Leitura
+from Leitura import *
 from Rio import Rio
-
-sys.path.append("E:\\SIMPPOD\\PD")
 
 # Definicao da classe
 class QUAL_UFMG(object):
@@ -24,28 +20,28 @@ class QUAL_UFMG(object):
     # METODOS
 
     @staticmethod
-    def constroi_param_ini(caminho_pontual, caminho_constantes, simula_difusa, caminho_cn, caminho_hidro, caminho_cme, caminho_usos):
-        ler = Leitura()
-
+    def constroi_param_ini(arquivo, simula_difusa):
         # Cria a matriz de contribuicoes
-        [matriz_contribuicoes, matriz_reducoes, matriz_tipo_contribuicoes] = ler.ler_contribuicao_pontual(caminho_pontual)
+        [matriz_contribuicoes, matriz_reducoes, matriz_tipo_contribuicoes] = ler_entrada_pontual(arquivo)
 
         # Cria o vetor de constantes
-        const = ler.ler_constantes(caminho_constantes)
+        const = ler_entrada_constantes(arquivo)
         # const = [DBO5r, ODr, NORGr, NAMONr, NNITRIr, PORGr, PINORGr, Qr, tam_rio, T, Alt, v, Ro2a, Ks, K1, K2,
         #          Koa, Kan, Koi, Kspo, a_vel, b_vel, Qinc, a_prof, b_prof, formula_k2, m, n, useK1, PH, Samon, NNITRAr,
-        #          Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, Sd, Lrd]
+        #          Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, NORGinc, NAMONinc, NNITRIinc, NNITRAinc,
+        #          PORGinc, PINORGinc, Sd, Lrd]
 
         # Cria o rio
         rio = Rio(const[0], const[1], const[2], const[3], const[4], const[5], const[6], const[7], const[8], const[9],
                   const[10], const[11], const[12], const[13], const[14], const[15], const[16], const[17], const[18],
                   const[19], const[20], const[21], const[22], const[23], const[24], const[25], const[26], const[27],
                   const[28], const[29], const[30], const[31], const[32], const[33], const[34], const[35], const[36],
-                  const[37], const[38], const[39], const[40], const[41], const[42], const[43], const[44], const[45], const[46])
+                  const[37], const[38], const[39], const[40], const[41], const[42], const[43], const[44], const[45],
+                  const[46], const[47], const[48], const[49])
 
         # Correcao das constantes do rio de acordo com a temperatura
         if simula_difusa:
-            scs = SCS(caminho_cn, caminho_hidro, caminho_cme, caminho_usos)
+            scs = SCS(arquivo)
         else:
             scs = []
 
@@ -56,7 +52,6 @@ class QUAL_UFMG(object):
         j = 0
         i = 0
         matriz_contribuicoes_otimizada = []
-
         while i < len(matriz_contribuicoes): # and j < len(matriz_reducao_pontual[1]):
             # Se N em matriz_contribuicoes = N em matriz_reducao_pontual
             if j < len(matriz_reducao_pontual[1]) and matriz_contribuicoes[i][9] == matriz_reducao_pontual[1][j]:
@@ -85,31 +80,27 @@ class QUAL_UFMG(object):
 
         return matriz_contribuicoes_otimizada
 
-    def executa(self, Rio, matriz_contribuicoes, matriz_reducao_pontual, simula_difusa, matriz_reducao_difusa, scs, numFuncaoP, matriz_tipo_contribuicoes):
+    def executa(self, Rio, matriz_contribuicoes, matriz_reducao_pontual, simula_difusa, matriz_reducao_difusa, scs, numFuncaoP, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios):
         euler = Euler()
-        constantes = Constantes(None, None, None, None, None, None, None, None, None, None, None, None, None)
-
-        # Correcao da concentracao de saturacao pela altitude
-        Cs = constantes.corrige_Cs(Rio.Alt, Rio.T)
 
         if simula_difusa:
-            [matriz_difusa, sub_bacias, matriz_cargas] = scs.executa(matriz_reducao_difusa, Rio.tam_cel)
+            [matriz_difusa, sub_bacias, matriz_cargas] = scs.executa(matriz_reducao_difusa)
 
             if matriz_reducao_pontual[0]:
                 matriz_contribuicoes_otimizada_tributario = self.aplica_reducoes(matriz_contribuicoes, matriz_reducao_pontual, numFuncaoP)
-                matriz_final = Rio.Concatena_matrizes(matriz_difusa, matriz_contribuicoes_otimizada_tributario, Cs)
+                matriz_final = Rio.Concatena_matrizes(matriz_difusa, matriz_contribuicoes_otimizada_tributario)
             else:
-                matriz_final = Rio.Concatena_matrizes(matriz_difusa, matriz_contribuicoes, Cs)
+                matriz_final = Rio.Concatena_matrizes(matriz_difusa, matriz_contribuicoes)
 
-            cenario = euler.Calcula(Rio, matriz_final, Cs, matriz_tipo_contribuicoes, simula_difusa)
+            cenario = euler.Calcula(Rio, matriz_final, matriz_tipo_contribuicoes, simula_difusa, tributarios, celula_entrada_tributarios)
             cenario.sub_bacias = sub_bacias
             cenario.matriz_cargas = matriz_cargas
 
         else:
             if matriz_reducao_pontual[0]:
                 matriz_contribuicoes_otimizada_tributario = self.aplica_reducoes(matriz_contribuicoes, matriz_reducao_pontual, numFuncaoP)
-                cenario = euler.Calcula(Rio, matriz_contribuicoes_otimizada_tributario, Cs, matriz_tipo_contribuicoes, simula_difusa)
+                cenario = euler.Calcula(Rio, matriz_contribuicoes_otimizada_tributario, matriz_tipo_contribuicoes, simula_difusa, tributarios, celula_entrada_tributarios)
             else:
-                cenario = euler.Calcula(Rio, matriz_contribuicoes, Cs, matriz_tipo_contribuicoes, simula_difusa)
+                cenario = euler.Calcula(Rio, matriz_contribuicoes, matriz_tipo_contribuicoes, simula_difusa, tributarios, celula_entrada_tributarios)
 
         return cenario

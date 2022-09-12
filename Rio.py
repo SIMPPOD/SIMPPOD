@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 # Modulo: Rio
 
-# Importacao de bibliotecas
-import numpy as np
-
 # Definicao da classe
 class Rio(object):
 
     # CONSTRUTOR
     def __init__(self, DBO5r, ODr, NORGr, NAMONr, NNITRIr, PORGr, PINORGr, Qr, tam_rio, T, Alt, v, Ro2a, Ks, K1, K2,
                  Koa, Kan, Koi, Kspo, a_vel, b_vel, Qinc, a_prof, b_prof, formula_k2, m, n, useK1, PH, Samon, NNITRAr,
-                 Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, NORGinc, NAMONinc, NNITRinc, NNITRAinc, Sd, Lrd):
+                 Kso, Knn, Ro2n, Knitr, tam_cel, classe, Sinorg, DBOinc, ODinc, NORGinc, NAMONinc, NNITRinc, NNITRAinc, PORGinc, PINORGinc, Sd, Lrd, Nt):
 
         self.DBO5r = DBO5r  # Concentracao de DBO no rio
         self.ODr = ODr  # Concentracao de OD no rio
@@ -58,45 +55,39 @@ class Rio(object):
         self.NAMONinc = NAMONinc
         self.NNITRinc = NNITRinc
         self.NNITRAinc = NNITRAinc
+        self.PORGinc = PORGinc
+        self.PINORGinc = PINORGinc
         self.Sd = Sd
         self.Lrd = Lrd
+        self.Nt = Nt
 
     # METODOS
 
-    # Metodo que usa a equacao de mistura do OD
     def eq_mistura_DBO(self, DBOur, DBO5e, Qr, Qe):
         return ((Qr * DBOur) + (Qe * DBO5e) + (self.DBOinc * self.Qinc)) / (Qr + Qe + self.Qinc)
     
     def eq_mistura_OD(self, ODr, ODe, Qr, Qe):
         return ((Qr * ODr) + (Qe * ODe) + (self.ODinc * self.Qinc)) / (Qr + Qe + self.Qinc)
     
-    # Metodo que usa a equacao de mistura do nitrogenio
-    @staticmethod
-    def eq_mistura_Norg(NORGr, NORGe, Qr, Qe):
-        return ((NORGr * Qr) + (NORGe * Qe)) / (Qr + Qe)
+    def eq_mistura_Norg(self, NORGr, NORGe, Qr, Qe):
+        return ((NORGr * Qr) + (NORGe * Qe) +(self.NORGinc * self.Qinc)) / (Qr + Qe + self.Qinc)
 
-    @staticmethod
-    def eq_mistura_Namon(NAMONr, NAMONe, Qr, Qe):
-        return ((NAMONr * Qr) + (NAMONe * Qe)) / (Qr + Qe)
+    def eq_mistura_Namon(self, NAMONr, NAMONe, Qr, Qe):
+        return ((NAMONr * Qr) + (NAMONe * Qe) + (self.NAMONinc * self.Qinc)) / (Qr + Qe + self.Qinc)
 
-    @staticmethod
-    def eq_mistura_Nnitri(NNITRIr, NNITRIe, Qr, Qe):
-        return ((NNITRIr * Qr) + (NNITRIe * Qe)) / (Qr + Qe)
+    def eq_mistura_Nnitri(self, NNITRIr, NNITRIe, Qr, Qe):
+        return ((NNITRIr * Qr) + (NNITRIe * Qe) + (self.NNITRinc * self.Qinc)) / (Qr + Qe + self.Qinc)
 
-    @staticmethod
-    def eq_mistura_Nnitra(NNITRAr, NNITRAe, Qr, Qe):
-        return ((NNITRAr * Qr) + (NNITRAe * Qe)) / (Qr + Qe)
+    def eq_mistura_Nnitra(self, NNITRAr, NNITRAe, Qr, Qe):
+        return ((NNITRAr * Qr) + (NNITRAe * Qe) + (self.NNITRAinc * self.Qinc)) / (Qr + Qe + self.Qinc)
 
-    # Metodo que usa a equacao de mistura do fosforo
-    @staticmethod
-    def eq_mistura_Porg(PORGr, PORGe, Qr, Qe):
-        return ((PORGr * Qr) + (PORGe * Qe)) / (Qr + Qe)
+    def eq_mistura_Porg(self, PORGr, PORGe, Qr, Qe):
+        return ((PORGr * Qr) + (PORGe * Qe) + (self.PORGinc * self.Qinc)) / (Qr + Qe + self.Qinc)
 
-    @staticmethod
-    def eq_mistura_Pinorg(PINORGr, PINORGe, Qr, Qe):
-        return ((PINORGr * Qr) + (PINORGe * Qe)) / (Qr + Qe)
+    def eq_mistura_Pinorg(self, PINORGr, PINORGe, Qr, Qe):
+        return ((Qr * PINORGr) + (Qe * PINORGe) + (self.PINORGinc * self.Qinc)) / (Qr + Qe + self.Qinc)
 
-    def Concatena_matrizes(self, matriz_difusa, matriz_contribuicoes, Cs):
+    def Concatena_matrizes(self, matriz_difusa, matriz_contribuicoes):
         matriz_final = []
         i = 0
         j = 0
@@ -119,24 +110,30 @@ class Rio(object):
                     i = i + 1
                 elif matriz_difusa[i][6] == matriz_contribuicoes[j][9]:
                     T = matriz_contribuicoes[j][13]
-                    new_dbo = self.eq_mistura_OD(matriz_difusa[i][0], matriz_difusa[i][1], matriz_contribuicoes[j][0],
-                                                 matriz_contribuicoes[j][1], matriz_difusa[i][5],
-                                                 matriz_contribuicoes[j][8], Cs)
-                    new_nitr = self.eq_mistura_Nitr(0, matriz_difusa[i][2], matriz_difusa[i][3], 0,
-                                                    matriz_contribuicoes[j][2], matriz_contribuicoes[j][3],
-                                                    matriz_contribuicoes[j][4], matriz_contribuicoes[j][5],
+                    new_dbo = self.eq_mistura_DBO(matriz_difusa[i][0], matriz_contribuicoes[j][0],
+                                                  matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    new_od = self.eq_mistura_OD(matriz_difusa[i][1], matriz_contribuicoes[j][1],
+                                                matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    new_norg = self.eq_mistura_Norg(0, matriz_contribuicoes[j][2],
                                                     matriz_difusa[i][5], matriz_contribuicoes[j][8])
-                    new_fosf = self.eq_mistura_Fosf(0, matriz_difusa[i][4], matriz_contribuicoes[j][6],
-                                                    matriz_contribuicoes[j][7], matriz_difusa[i][5],
-                                                    matriz_contribuicoes[j][8])
-                    vetor_aux.append(new_dbo[0][0])
-                    vetor_aux.append(new_dbo[2][0])
-                    vetor_aux.append(new_nitr[0][0])
-                    vetor_aux.append(new_nitr[1][0])
-                    vetor_aux.append(new_nitr[2][0])
-                    vetor_aux.append(new_nitr[3][0])
-                    vetor_aux.append(new_fosf[0][0])
-                    vetor_aux.append(new_fosf[1][0])
+                    new_namon = self.eq_mistura_Namon(matriz_difusa[i][2], matriz_contribuicoes[j][3],
+                                                      matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    new_nnitri = self.eq_mistura_Nnitri(matriz_difusa[i][3], matriz_contribuicoes[j][4],
+                                                        matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    new_nnitra = self.eq_mistura_Nnitra(0, matriz_contribuicoes[j][5],
+                                                        matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    new_Porg = self.eq_mistura_Porg(0, matriz_contribuicoes[j][6],
+                                                    matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    new_Pinorg = self.eq_mistura_Pinorg(matriz_difusa[i][4], matriz_contribuicoes[j][7],
+                                                        matriz_difusa[i][5], matriz_contribuicoes[j][8])
+                    vetor_aux.append(new_dbo)
+                    vetor_aux.append(new_od)
+                    vetor_aux.append(new_norg)
+                    vetor_aux.append(new_namon)
+                    vetor_aux.append(new_nnitri)
+                    vetor_aux.append(new_nnitra)
+                    vetor_aux.append(new_Porg)
+                    vetor_aux.append(new_Pinorg)
                     vetor_aux.append(matriz_contribuicoes[j][8] + matriz_difusa[i][5])
                     vetor_aux.append(matriz_contribuicoes[j][9])
                     vetor_aux.append(matriz_contribuicoes[j][10])

@@ -3,11 +3,6 @@
 
 # Importacao de bibliotecas
 from random import uniform
-import numpy as np
-
-def converte_float(valor):
-    if valor.find("."):
-        return valor.replace(".",",")
 
 # Definicao da classe
 class Cromossomo:
@@ -22,40 +17,14 @@ class Cromossomo:
         self.tam_cromossomo = tam_cromossomo
 
     # METODOS
-
-    # Metodo que escreve a saida
-    def Escreve_saida(self, caminho, tempo, vetor_invalidos):
-        arq = open(caminho, "a+") 
-
-        # Escrita do arquivo
-        arq.write("Resultados da Otimização de Poluição Pontual: Identificação dos valores mínimos de redução necessários ao atendimento da classe de QA desejada \n")
-        arq.write("Tempo de processamento (s):; " + converte_float(str(tempo)) + "\n")
-        arq.write("Número de inválidos gerados:; " + str(vetor_invalidos) + "\n")
-
-        if self.simula_difusa:
-            arq.write("Eficiência de Tratamento/Redução:  \n\n")
-            arq.write("ID subbacia; DBO; Amonia; Nitrito; P-inorg\n")
-            for i in range(len(self.alelos)): 
-                arq.write(str(self.cenario.sub_bacias[i].ID) + ";")
-                for j in range(len(self.alelos[i])): 
-                    arq.write(str(self.alelos[i][j]) + ";") 
-                arq.write("\n")
-        else:
-            for i in range(len(self.alelos)): 
-                arq.write("Eficiência de Tratamento/Redução:;" + converte_float(str(self.alelos[i])) + "\n")
-
-        arq.write("Nota da F.O. para a melhor solucao:; " + converte_float(str(self.func_objetivo)) + "\n\n")
-        arq.write("OBS: As eficiencias de tratamento/redução se encontram expressas em decimal.\n")
-        arq.close()
-
     # Metodo que executa o QUAL_UFMG
-    def exec_QualUFMG(self, qual_ufmg, Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, numFuncao, matriz_tipo_contribuicoes):
+    def exec_QualUFMG(self, qual_ufmg, Rio, matriz_contribuicoes, matriz_reducao_pontual, scs, numFuncao, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios):
         if self.simula_difusa:
-            self.cenario = qual_ufmg.executa(Rio, matriz_contribuicoes, matriz_reducao_pontual, True, self.alelos, scs, numFuncao, matriz_tipo_contribuicoes)
+            self.cenario = qual_ufmg.executa(Rio, matriz_contribuicoes, matriz_reducao_pontual, True, self.alelos, scs, numFuncao, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios)
         else:
             matriz_reducao_pontual[0] = self.alelos
             matriz_reducao_difusa = []
-            self.cenario = qual_ufmg.executa(Rio, matriz_contribuicoes, matriz_reducao_pontual, False, matriz_reducao_difusa, scs, numFuncao, matriz_tipo_contribuicoes)
+            self.cenario = qual_ufmg.executa(Rio, matriz_contribuicoes, matriz_reducao_pontual, False, matriz_reducao_difusa, scs, numFuncao, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios)
 
     # Metodo que retorna a funcao objetivo
     def get_func_obj(self):
@@ -135,6 +104,7 @@ class Cromossomo:
                     intervalo_depois = (0.9 - float(ef_minima[i]))/qtdAlelos  # Tamanho de cada sub intervalo dividido do intervalo [ef_minima, 0.9]
                     # Codificacao do alelo por regra de tres
                     self.alelos.append(round((intervalo_depois*self.alelos_codificados[i])/intervalo_antes + ef_minima[i], 4)) 
+
         elif numFuncao == 4:
             intervalo_depois = 0.9/qtdAlelos  # Tamanho de cada sub intervalo dividido do intervalo [0, 0.9]
             for i in range(qtdAlelos):
