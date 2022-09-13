@@ -534,7 +534,7 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
             historico_filhos_invalidosP, historico_filhos_invalidos, iteracao_versao_rapidaP, iteracao_versao_rapida,
             tam_rio, tam_cel, ph, perfilQP, perfilQ] = executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_textos, modo_otimizacao, simula_rio, simula_tributarios)
         except:
-            label_caixa_textos["text"] = label_caixa_textos["text"] + "Ocorreu algum erro durante a simulação. Confira os dados do arquivo de entrada e tente novamente.\n"
+            label_caixa_textos["text"] = "Ocorreu algum erro durante a simulação. Confira os dados do arquivo de entrada e tente novamente.\n"
             
         else:
             label_caixa_textos["text"] = label_caixa_textos["text"] + "Simulação Finalizada!\n"
