@@ -517,8 +517,6 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
     canvas_saidas.place(x=0,y=30)
     label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
     label_caixa_textos.place(x=2, y=2)
-    
-    label_caixa_textos["text"] = label_caixa_textos["text"] + "Simulação Finalizada!\n"
 
     canvas_nova_simulacao = Canvas(frame_saidas, height=25, width=794, bg='#94B7D5', highlightbackground="black")
     canvas_nova_simulacao.place(x=0,y=550)
@@ -530,517 +528,522 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
     else:
         Muda_tela(janela_inicial, frame_saidas)
 
-        [cenario_base_pontual, melhor_solucao_pontual, cenario_base_difusa, melhor_solucao_difusa,
-        historico_foP, historico_fo, historico_tempo_iteracoesP, historico_tempo_iteracoes,
-        historico_filhos_invalidosP, historico_filhos_invalidos, iteracao_versao_rapidaP, iteracao_versao_rapida,
-        tam_rio, tam_cel, ph, perfilQP, perfilQ] = executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_textos, modo_otimizacao, simula_rio, simula_tributarios)
-
-        if simula_rio.get() or (not simula_rio.get() and len(vetor_caminhos[1]) == 1):
-            if modo_execucao.get() != 2:
-                if simula_rio.get():
-                    constantes = ler_entrada_constantes(vetor_caminhos[0])
-                else:
-                    constantes = ler_entrada_constantes(vetor_caminhos[1][0])
-                classe = constantes[37]
-                restricao_DBO = cria_vetor_restricao(0, tam_rio, tam_cel, ph, classe)
-                restricao_OD = cria_vetor_restricao(1, tam_rio, tam_cel, ph, classe)
-                restricao_NAMON = cria_vetor_restricao(3, tam_rio, tam_cel, ph, classe)
-                restricao_NNITR = cria_vetor_restricao(4, tam_rio, tam_cel, ph, classe)
-                restricao_NNITRA = cria_vetor_restricao(5, tam_rio, tam_cel, ph, classe)
-                restricao_PORG = cria_vetor_restricao(6, tam_rio, tam_cel, ph, classe)
-
-            if modo_execucao.get() == "110":
-                canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
-
-                canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
-                canvas_historico.place(x=0,y=180)
-
-                label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
-                label_vazao.place(x=2, y=2)
-                botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
-                botao_vazaoP.place(x=2, y=30)
-
-                # Labels
-                saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-                label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
-                label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
-                label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
-
-                # Botões
-                # cenario base pontual
-                botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
-
-                # Localizando todos os componentes
-                canvas_graficos.place(x=0, y=250)
-                saidas.place(x=0, y=0)
-                label_graf.place(x=2, y=2)
-                label_gbp.place(x=2, y=25)
-                label_caixa_textos.place(x=2, y=2)
-                botao_cbp_DBO.place(x=8, y=55)
-                botao_cbp_OD.place(x=105, y=55)
-                botao_cbp_NORG.place(x=205, y=55)
-                botao_cbp_NAMON.place(x=305, y=55)
-                botao_cbp_NNITR.place(x=405, y=55)
-                botao_cbp_NNITRA.place(x=505, y=55)
-                botao_cbp_PORG.place(x=605, y=55)
-                botao_cbp_PINORG.place(x=705, y=55)
-
-                # cenario vazao
-                botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
-
-                # cenario base pontual
-                botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+        try:
+            [cenario_base_pontual, melhor_solucao_pontual, cenario_base_difusa, melhor_solucao_difusa,
+            historico_foP, historico_fo, historico_tempo_iteracoesP, historico_tempo_iteracoes,
+            historico_filhos_invalidosP, historico_filhos_invalidos, iteracao_versao_rapidaP, iteracao_versao_rapida,
+            tam_rio, tam_cel, ph, perfilQP, perfilQ] = executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_textos, modo_otimizacao, simula_rio, simula_tributarios)
+        except:
+            label_caixa_textos["text"] = label_caixa_textos["text"] + "Ocorreu algum erro durante a simulação. Confira os dados do arquivo de entrada e tente novamente.\n"
             
+        else:
+            label_caixa_textos["text"] = label_caixa_textos["text"] + "Simulação Finalizada!\n"
+            if simula_rio.get() or (not simula_rio.get() and len(vetor_caminhos[1]) == 1):
+                if modo_execucao.get() != 2:
+                    if simula_rio.get():
+                        constantes = ler_entrada_constantes(vetor_caminhos[0])
+                    else:
+                        constantes = ler_entrada_constantes(vetor_caminhos[1][0])
+                    classe = constantes[37]
+                    restricao_DBO = cria_vetor_restricao(0, tam_rio, tam_cel, ph, classe)
+                    restricao_OD = cria_vetor_restricao(1, tam_rio, tam_cel, ph, classe)
+                    restricao_NAMON = cria_vetor_restricao(3, tam_rio, tam_cel, ph, classe)
+                    restricao_NNITR = cria_vetor_restricao(4, tam_rio, tam_cel, ph, classe)
+                    restricao_NNITRA = cria_vetor_restricao(5, tam_rio, tam_cel, ph, classe)
+                    restricao_PORG = cria_vetor_restricao(6, tam_rio, tam_cel, ph, classe)
 
-            elif modo_execucao.get() == "101":
-                canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
+                if modo_execucao.get() == "110":
+                    canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
 
-                canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
-                canvas_historico.place(x=0,y=180)
+                    canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
+                    canvas_historico.place(x=0,y=180)
 
-                label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
-                label_vazao.place(x=2, y=2)
-                botao_vazao = Button(canvas_historico, width=11, text="Difuso")
-                botao_vazao.place(x=2, y=30)
+                    label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
+                    label_vazao.place(x=2, y=2)
+                    botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_vazaoP.place(x=2, y=30)
 
-                # Labels
-                saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-                label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
-                label_gbd = Label(canvas_graficos, text="Cenário Base Difuso:", bg='#94B7D5', font=('Arial', '11'))
-                label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
+                    # Labels
+                    saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+                    label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
+                    label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
 
-                # Botões
-                # cenario base difuso
-                botao_cbd_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbd_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbd_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbd_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbd_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbd_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbd_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbd_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    # Botões
+                    # cenario base pontual
+                    botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                # Localizando todos os componentes
-                canvas_graficos.place(x=0, y=250)
-                saidas.place(x=0, y=0)
-                label_graf.place(x=2, y=2)
-                label_gbd.place(x=2, y=25)
-                label_caixa_textos.place(x=2, y=2)
-                botao_cbd_DBO.place(x=8, y=55)
-                botao_cbd_OD.place(x=105, y=55)
-                botao_cbd_NORG.place(x=205, y=55)
-                botao_cbd_NAMON.place(x=305, y=55)
-                botao_cbd_NNITR.place(x=405, y=55)
-                botao_cbd_NNITRA.place(x=505, y=55)
-                botao_cbd_PORG.place(x=605, y=55)
-                botao_cbd_PINORG.place(x=705, y=55)
+                    # Localizando todos os componentes
+                    canvas_graficos.place(x=0, y=250)
+                    saidas.place(x=0, y=0)
+                    label_graf.place(x=2, y=2)
+                    label_gbp.place(x=2, y=25)
+                    label_caixa_textos.place(x=2, y=2)
+                    botao_cbp_DBO.place(x=8, y=55)
+                    botao_cbp_OD.place(x=105, y=55)
+                    botao_cbp_NORG.place(x=205, y=55)
+                    botao_cbp_NAMON.place(x=305, y=55)
+                    botao_cbp_NNITR.place(x=405, y=55)
+                    botao_cbp_NNITRA.place(x=505, y=55)
+                    botao_cbp_PORG.place(x=605, y=55)
+                    botao_cbp_PINORG.place(x=705, y=55)
 
-                # cenario vazao
-                botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
+                    # cenario vazao
+                    botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
 
-                # cenario base difuso
-                botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
-            
-            elif modo_execucao.get() == "111":
-                canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
+                    # cenario base pontual
+                    botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                
 
-                canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
-                canvas_historico.place(x=0,y=180)
+                elif modo_execucao.get() == "101":
+                    canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
 
-                label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
-                label_vazao.place(x=2, y=2)
-                botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
-                botao_vazaoP.place(x=2, y=30)
-                botao_vazao = Button(canvas_historico, width=11, text="Difuso")
-                botao_vazao.place(x=102, y=30)
+                    canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
+                    canvas_historico.place(x=0,y=180)
 
-                # Labels
-                saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-                label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
-                label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
-                label_gbd = Label(canvas_graficos, text="Cenário Base Difuso:", bg='#94B7D5', font=('Arial', '11'))
-                label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
+                    label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
+                    label_vazao.place(x=2, y=2)
+                    botao_vazao = Button(canvas_historico, width=11, text="Difuso")
+                    botao_vazao.place(x=2, y=30)
 
-                # cenario base pontual
-                botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    # Labels
+                    saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+                    label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_gbd = Label(canvas_graficos, text="Cenário Base Difuso:", bg='#94B7D5', font=('Arial', '11'))
+                    label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
 
-                # cenario base difuso
-                botao_cbd_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbd_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbd_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbd_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbd_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbd_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbd_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbd_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    # Botões
+                    # cenario base difuso
+                    botao_cbd_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbd_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbd_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbd_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbd_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbd_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbd_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbd_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                canvas_graficos.place(x=0, y=250)
-                saidas.place(x=0, y=0)
-                label_graf.place(x=2, y=2)
-                label_gbp.place(x=2, y=25)
-                label_gbd.place(x=2, y=85)
-                label_caixa_textos.place(x=2, y=2)
-                botao_cbp_DBO.place(x=8, y=55)
-                botao_cbp_OD.place(x=105, y=55)
-                botao_cbp_NORG.place(x=205, y=55)
-                botao_cbp_NAMON.place(x=305, y=55)
-                botao_cbp_NNITR.place(x=405, y=55)
-                botao_cbp_NNITRA.place(x=505, y=55)
-                botao_cbp_PORG.place(x=605, y=55)
-                botao_cbp_PINORG.place(x=705, y=55)
-                botao_cbd_DBO.place(x=8, y=115)
-                botao_cbd_OD.place(x=105, y=115)
-                botao_cbd_NORG.place(x=205, y=115)
-                botao_cbd_NAMON.place(x=305, y=115)
-                botao_cbd_NNITR.place(x=405, y=115)
-                botao_cbd_NNITRA.place(x=505, y=115)
-                botao_cbd_PORG.place(x=605, y=115)
-                botao_cbd_PINORG.place(x=705, y=115)
-            
-                # cenario vazao
-                botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
-                botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
+                    # Localizando todos os componentes
+                    canvas_graficos.place(x=0, y=250)
+                    saidas.place(x=0, y=0)
+                    label_graf.place(x=2, y=2)
+                    label_gbd.place(x=2, y=25)
+                    label_caixa_textos.place(x=2, y=2)
+                    botao_cbd_DBO.place(x=8, y=55)
+                    botao_cbd_OD.place(x=105, y=55)
+                    botao_cbd_NORG.place(x=205, y=55)
+                    botao_cbd_NAMON.place(x=305, y=55)
+                    botao_cbd_NNITR.place(x=405, y=55)
+                    botao_cbd_NNITRA.place(x=505, y=55)
+                    botao_cbd_PORG.place(x=605, y=55)
+                    botao_cbd_PINORG.place(x=705, y=55)
 
-                # cenario base pontual
-                botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG"
+                    # cenario vazao
+                    botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
 
-                # cenario base difuso
-                botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
-            
+                    # cenario base difuso
+                    botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                
+                elif modo_execucao.get() == "111":
+                    canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
 
-            elif modo_execucao.get() == "21":
-                canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
+                    canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
+                    canvas_historico.place(x=0,y=180)
 
-                canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
-                canvas_historico.place(x=0,y=180)
+                    label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
+                    label_vazao.place(x=2, y=2)
+                    botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_vazaoP.place(x=2, y=30)
+                    botao_vazao = Button(canvas_historico, width=11, text="Difuso")
+                    botao_vazao.place(x=102, y=30)
 
-                label_fo = Label(canvas_historico, text="Gráfico da FO:", bg='#94B7D5', font=('Arial', '13'))
-                label_fo.place(x=2, y=2)
-                botao_foP = Button(canvas_historico, width=11, text="Pontual")
-                botao_foP.place(x=2, y=30)
+                    # Labels
+                    saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+                    label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
+                    label_gbd = Label(canvas_graficos, text="Cenário Base Difuso:", bg='#94B7D5', font=('Arial', '11'))
+                    label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
 
-                label_tempo = Label(canvas_historico, text="Duração das Iterações:", bg='#94B7D5', font=('Arial', '13'))
-                label_tempo.place(x=202, y=2)
-                botao_tempoP = Button(canvas_historico, width=11, text="Pontual")
-                botao_tempoP.place(x=202, y=30)
+                    # cenario base pontual
+                    botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                label_invalidos = Label(canvas_historico, text="Filhos Inválidos:", bg='#94B7D5', font=('Arial', '13'))
-                label_invalidos.place(x=402, y=2)
-                botao_invalidosP = Button(canvas_historico, width=11, text="Pontual")
-                botao_invalidosP.place(x=402, y=30)
+                    # cenario base difuso
+                    botao_cbd_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbd_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbd_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbd_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbd_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbd_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbd_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbd_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
-                label_vazao.place(x=602, y=2)
-                botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
-                botao_vazaoP.place(x=602, y=30)
+                    canvas_graficos.place(x=0, y=250)
+                    saidas.place(x=0, y=0)
+                    label_graf.place(x=2, y=2)
+                    label_gbp.place(x=2, y=25)
+                    label_gbd.place(x=2, y=85)
+                    label_caixa_textos.place(x=2, y=2)
+                    botao_cbp_DBO.place(x=8, y=55)
+                    botao_cbp_OD.place(x=105, y=55)
+                    botao_cbp_NORG.place(x=205, y=55)
+                    botao_cbp_NAMON.place(x=305, y=55)
+                    botao_cbp_NNITR.place(x=405, y=55)
+                    botao_cbp_NNITRA.place(x=505, y=55)
+                    botao_cbp_PORG.place(x=605, y=55)
+                    botao_cbp_PINORG.place(x=705, y=55)
+                    botao_cbd_DBO.place(x=8, y=115)
+                    botao_cbd_OD.place(x=105, y=115)
+                    botao_cbd_NORG.place(x=205, y=115)
+                    botao_cbd_NAMON.place(x=305, y=115)
+                    botao_cbd_NNITR.place(x=405, y=115)
+                    botao_cbd_NNITRA.place(x=505, y=115)
+                    botao_cbd_PORG.place(x=605, y=115)
+                    botao_cbd_PINORG.place(x=705, y=115)
+                
+                    # cenario vazao
+                    botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
+                    botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
 
-                # Labels
-                saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-                label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
-                label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
-                label_gop = Label(canvas_graficos, text="Cenário Otimizado Pontual:", bg='#94B7D5', font=('Arial', '11'))
-                label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
+                    # cenario base pontual
+                    botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG"
 
-                # Botões
-                # cenario base pontual
-                botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    # cenario base difuso
+                    botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difusa[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                
 
-                # cenario otimizado pontual
-                botao_cop_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cop_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cop_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cop_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cop_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cop_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cop_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cop_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                elif modo_execucao.get() == "21":
+                    canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
 
-                # Localizando todos os componentes
-                canvas_graficos.place(x=0, y=250)
-                saidas.place(x=0, y=0)
-                label_graf.place(x=2, y=2)
-                label_gbp.place(x=2, y=25)
-                label_gop.place(x=2, y=85)
-                label_caixa_textos.place(x=2, y=2)
-                botao_cbp_DBO.place(x=8, y=55)
-                botao_cbp_OD.place(x=105, y=55)
-                botao_cbp_NORG.place(x=205, y=55)
-                botao_cbp_NAMON.place(x=305, y=55)
-                botao_cbp_NNITR.place(x=405, y=55)
-                botao_cbp_NNITRA.place(x=505, y=55)
-                botao_cbp_PORG.place(x=605, y=55)
-                botao_cbp_PINORG.place(x=705, y=55)
-                botao_cop_DBO.place(x=8, y=115)
-                botao_cop_OD.place(x=105, y=115)
-                botao_cop_NORG.place(x=205, y=115)
-                botao_cop_NAMON.place(x=305, y=115)
-                botao_cop_NNITR.place(x=405, y=115)
-                botao_cop_NNITRA.place(x=505, y=115)
-                botao_cop_PORG.place(x=605, y=115)
-                botao_cop_PINORG.place(x=705, y=115)
+                    canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
+                    canvas_historico.place(x=0,y=180)
 
-                # cenario fo
-                botao_foP["command"] = partial(gera_grafico_fo, historico_foP[0], iteracao_versao_rapidaP)
+                    label_fo = Label(canvas_historico, text="Gráfico da FO:", bg='#94B7D5', font=('Arial', '13'))
+                    label_fo.place(x=2, y=2)
+                    botao_foP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_foP.place(x=2, y=30)
 
-                # cenario do tempo das iteracoes
-                botao_tempoP["command"] = partial(gera_grafico_tempo_iteracoes, historico_tempo_iteracoesP[0], iteracao_versao_rapidaP)
+                    label_tempo = Label(canvas_historico, text="Duração das Iterações:", bg='#94B7D5', font=('Arial', '13'))
+                    label_tempo.place(x=202, y=2)
+                    botao_tempoP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_tempoP.place(x=202, y=30)
 
-                # cenario filhos invalidos
-                botao_invalidosP["command"] = partial(gera_grafico_filhos_invalidos, historico_filhos_invalidosP[0], iteracao_versao_rapidaP)
+                    label_invalidos = Label(canvas_historico, text="Filhos Inválidos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_invalidos.place(x=402, y=2)
+                    botao_invalidosP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_invalidosP.place(x=402, y=30)
 
-                # cenario vazao
-                botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP[0], tam_cel, tam_rio)
+                    label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
+                    label_vazao.place(x=602, y=2)
+                    botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_vazaoP.place(x=602, y=30)
 
-                # cenario base pontual
-                botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                    # Labels
+                    saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+                    label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
+                    label_gop = Label(canvas_graficos, text="Cenário Otimizado Pontual:", bg='#94B7D5', font=('Arial', '11'))
+                    label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
 
-                # cenario otimizado pontual
-                botao_cop_DBO["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cop_OD["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cop_NORG["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cop_NAMON["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cop_NNITR["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cop_NNITRA["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cop_PORG["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cop_PINORG["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                    # Botões
+                    # cenario base pontual
+                    botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-            
-            elif modo_execucao.get() == "22":
-                canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
+                    # cenario otimizado pontual
+                    botao_cop_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cop_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cop_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cop_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cop_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cop_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cop_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cop_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
-                canvas_historico.place(x=0,y=180)
+                    # Localizando todos os componentes
+                    canvas_graficos.place(x=0, y=250)
+                    saidas.place(x=0, y=0)
+                    label_graf.place(x=2, y=2)
+                    label_gbp.place(x=2, y=25)
+                    label_gop.place(x=2, y=85)
+                    label_caixa_textos.place(x=2, y=2)
+                    botao_cbp_DBO.place(x=8, y=55)
+                    botao_cbp_OD.place(x=105, y=55)
+                    botao_cbp_NORG.place(x=205, y=55)
+                    botao_cbp_NAMON.place(x=305, y=55)
+                    botao_cbp_NNITR.place(x=405, y=55)
+                    botao_cbp_NNITRA.place(x=505, y=55)
+                    botao_cbp_PORG.place(x=605, y=55)
+                    botao_cbp_PINORG.place(x=705, y=55)
+                    botao_cop_DBO.place(x=8, y=115)
+                    botao_cop_OD.place(x=105, y=115)
+                    botao_cop_NORG.place(x=205, y=115)
+                    botao_cop_NAMON.place(x=305, y=115)
+                    botao_cop_NNITR.place(x=405, y=115)
+                    botao_cop_NNITRA.place(x=505, y=115)
+                    botao_cop_PORG.place(x=605, y=115)
+                    botao_cop_PINORG.place(x=705, y=115)
 
-                label_fo = Label(canvas_historico, text="Gráfico da FO:", bg='#94B7D5', font=('Arial', '13'))
-                label_fo.place(x=2, y=2)
-                botao_foP = Button(canvas_historico, width=11, text="Pontual")
-                botao_foP.place(x=2, y=30)
-                botao_fo = Button(canvas_historico, width=11, text="Difusa")
-                botao_fo.place(x=102, y=30)
+                    # cenario fo
+                    botao_foP["command"] = partial(gera_grafico_fo, historico_foP[0], iteracao_versao_rapidaP)
 
-                label_tempo = Label(canvas_historico, text="Duração das Iterações:", bg='#94B7D5', font=('Arial', '13'))
-                label_tempo.place(x=202, y=2)
-                botao_tempoP = Button(canvas_historico, width=11, text="Pontual")
-                botao_tempoP.place(x=202, y=30)
-                botao_tempo = Button(canvas_historico, width=11, text="Difusa")
-                botao_tempo.place(x=302, y=30)
+                    # cenario do tempo das iteracoes
+                    botao_tempoP["command"] = partial(gera_grafico_tempo_iteracoes, historico_tempo_iteracoesP[0], iteracao_versao_rapidaP)
 
-                label_invalidos = Label(canvas_historico, text="Filhos Inválidos:", bg='#94B7D5', font=('Arial', '13'))
-                label_invalidos.place(x=402, y=2)
-                botao_invalidosP = Button(canvas_historico, width=11, text="Pontual")
-                botao_invalidosP.place(x=402, y=30)
-                botao_invalidos = Button(canvas_historico, width=11, text="Difusa")
-                botao_invalidos.place(x=502, y=30)
+                    # cenario filhos invalidos
+                    botao_invalidosP["command"] = partial(gera_grafico_filhos_invalidos, historico_filhos_invalidosP[0], iteracao_versao_rapidaP)
 
-                label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
-                label_vazao.place(x=602, y=2)
-                botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
-                botao_vazaoP.place(x=602, y=30)
-                botao_vazao = Button(canvas_historico, width=11, text="Difuso")
-                botao_vazao.place(x=702, y=30)
+                    # cenario vazao
+                    botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP[0], tam_cel, tam_rio)
 
-                # Labels
-                saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-                label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
-                label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
-                label_gop = Label(canvas_graficos, text="Cenário Otimizado Pontual:", bg='#94B7D5', font=('Arial', '11'))
-                label_gbd = Label(canvas_graficos, text="Cenário Base Difuso:", bg='#94B7D5', font=('Arial', '11'))
-                label_god = Label(canvas_graficos, text="Cenário Otimizado Difuso:", bg='#94B7D5', font=('Arial', '11'))
-                label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
+                    # cenario base pontual
+                    botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
-                # Botões
-                # cenario base pontual
-                botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    # cenario otimizado pontual
+                    botao_cop_DBO["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cop_OD["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cop_NORG["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cop_NAMON["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cop_NNITR["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cop_NNITRA["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cop_PORG["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cop_PINORG["command"] = partial(gera_grafico, melhor_solucao_pontual[0].cenario.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
-                # cenario otimizado pontual
-                botao_cop_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cop_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cop_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cop_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cop_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cop_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cop_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cop_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                
+                elif modo_execucao.get() == "22":
+                    canvas_graficos = Canvas(frame_saidas, height=280, width=794, bg='#94B7D5', highlightbackground="black")
 
-                # cenario base difuso
-                botao_cbd_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cbd_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cbd_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cbd_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cbd_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cbd_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cbd_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cbd_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    canvas_historico = Canvas(frame_saidas, height=70, width=794, bg='#94B7D5', highlightbackground="black")
+                    canvas_historico.place(x=0,y=180)
 
-                # cenario otimizado difuso
-                botao_cod_DBO = Button(canvas_graficos, width=11, text="DBO")
-                botao_cod_OD = Button(canvas_graficos, width=11, text="OD")
-                botao_cod_NORG = Button(canvas_graficos, width=11, text="Norg")
-                botao_cod_NAMON = Button(canvas_graficos, width=11, text="Namon")
-                botao_cod_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
-                botao_cod_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
-                botao_cod_PORG = Button(canvas_graficos, width=11, text="Porg")
-                botao_cod_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+                    label_fo = Label(canvas_historico, text="Gráfico da FO:", bg='#94B7D5', font=('Arial', '13'))
+                    label_fo.place(x=2, y=2)
+                    botao_foP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_foP.place(x=2, y=30)
+                    botao_fo = Button(canvas_historico, width=11, text="Difusa")
+                    botao_fo.place(x=102, y=30)
 
-                # Localizando todos os componentes
-                canvas_graficos.place(x=0, y=250)
-                saidas.place(x=0, y=0)
-                label_graf.place(x=2, y=2)
-                label_gbp.place(x=2, y=25)
-                label_gop.place(x=2, y=85)
-                label_gbd.place(x=2, y=145)
-                label_god.place(x=2, y=205)
-                label_caixa_textos.place(x=2, y=2)
-                botao_cbp_DBO.place(x=8, y=55)
-                botao_cbp_OD.place(x=105, y=55)
-                botao_cbp_NORG.place(x=205, y=55)
-                botao_cbp_NAMON.place(x=305, y=55)
-                botao_cbp_NNITR.place(x=405, y=55)
-                botao_cbp_NNITRA.place(x=505, y=55)
-                botao_cbp_PORG.place(x=605, y=55)
-                botao_cbp_PINORG.place(x=705, y=55)
-                botao_cop_DBO.place(x=8, y=115)
-                botao_cop_OD.place(x=105, y=115)
-                botao_cop_NORG.place(x=205, y=115)
-                botao_cop_NAMON.place(x=305, y=115)
-                botao_cop_NNITR.place(x=405, y=115)
-                botao_cop_NNITRA.place(x=505, y=115)
-                botao_cop_PORG.place(x=605, y=115)
-                botao_cop_PINORG.place(x=705, y=115)
-                botao_cbd_DBO.place(x=8, y=175)
-                botao_cbd_OD.place(x=105, y=175)
-                botao_cbd_NORG.place(x=205, y=175)
-                botao_cbd_NAMON.place(x=305, y=175)
-                botao_cbd_NNITR.place(x=405, y=175)
-                botao_cbd_NNITRA.place(x=505, y=175)
-                botao_cbd_PORG.place(x=605, y=175)
-                botao_cbd_PINORG.place(x=705, y=175)
-                botao_cod_DBO.place(x=8, y=235)
-                botao_cod_OD.place(x=105, y=235)
-                botao_cod_NORG.place(x=205, y=235)
-                botao_cod_NAMON.place(x=305, y=235)
-                botao_cod_NNITR.place(x=405, y=235)
-                botao_cod_NNITRA.place(x=505, y=235)
-                botao_cod_PORG.place(x=605, y=235)
-                botao_cod_PINORG.place(x=705, y=235)
-            
-                # cenario fo
-                botao_foP["command"] = partial(gera_grafico_fo, historico_foP, iteracao_versao_rapidaP)
-                botao_fo["command"] = partial(gera_grafico_fo, historico_fo, iteracao_versao_rapida)
+                    label_tempo = Label(canvas_historico, text="Duração das Iterações:", bg='#94B7D5', font=('Arial', '13'))
+                    label_tempo.place(x=202, y=2)
+                    botao_tempoP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_tempoP.place(x=202, y=30)
+                    botao_tempo = Button(canvas_historico, width=11, text="Difusa")
+                    botao_tempo.place(x=302, y=30)
 
-                # cenario do tempo das iteracoes
-                botao_tempoP["command"] = partial(gera_grafico_tempo_iteracoes, historico_tempo_iteracoesP, iteracao_versao_rapidaP)
-                botao_tempo["command"] = partial(gera_grafico_tempo_iteracoes, historico_tempo_iteracoes, iteracao_versao_rapida)
+                    label_invalidos = Label(canvas_historico, text="Filhos Inválidos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_invalidos.place(x=402, y=2)
+                    botao_invalidosP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_invalidosP.place(x=402, y=30)
+                    botao_invalidos = Button(canvas_historico, width=11, text="Difusa")
+                    botao_invalidos.place(x=502, y=30)
 
-                # cenario filhos invalidos
-                botao_invalidosP["command"] = partial(gera_grafico_filhos_invalidos, historico_filhos_invalidosP, iteracao_versao_rapidaP)
-                botao_invalidos["command"] = partial(gera_grafico_filhos_invalidos, historico_filhos_invalidos, iteracao_versao_rapida)
+                    label_vazao = Label(canvas_historico, text="Gráfico da Vazão:", bg='#94B7D5', font=('Arial', '13'))
+                    label_vazao.place(x=602, y=2)
+                    botao_vazaoP = Button(canvas_historico, width=11, text="Pontual")
+                    botao_vazaoP.place(x=602, y=30)
+                    botao_vazao = Button(canvas_historico, width=11, text="Difuso")
+                    botao_vazao.place(x=702, y=30)
 
-                # cenario vazao
-                botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
-                botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
+                    # Labels
+                    saidas = Label(frame_saidas, text="Saidas:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+                    label_graf = Label(canvas_graficos, text="Graficos:", bg='#94B7D5', font=('Arial', '13'))
+                    label_gbp = Label(canvas_graficos, text="Cenário Base Pontual:", bg='#94B7D5', font=('Arial', '11'))
+                    label_gop = Label(canvas_graficos, text="Cenário Otimizado Pontual:", bg='#94B7D5', font=('Arial', '11'))
+                    label_gbd = Label(canvas_graficos, text="Cenário Base Difuso:", bg='#94B7D5', font=('Arial', '11'))
+                    label_god = Label(canvas_graficos, text="Cenário Otimizado Difuso:", bg='#94B7D5', font=('Arial', '11'))
+                    label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
 
-                # cenario base pontual
-                botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                    # Botões
+                    # cenario base pontual
+                    botao_cbp_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbp_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbp_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbp_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbp_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbp_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbp_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbp_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                # cenario otimizado pontual
-                botao_cop_DBO["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cop_OD["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cop_NORG["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cop_NAMON["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cop_NNITR["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cop_NNITRA["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cop_PORG["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cop_PINORG["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                    # cenario otimizado pontual
+                    botao_cop_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cop_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cop_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cop_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cop_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cop_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cop_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cop_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                # cenario base difuso
-                botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difusa.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difusa.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difusa.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difusa.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difusa.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difusa.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difusa.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difusa.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                    # cenario base difuso
+                    botao_cbd_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cbd_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cbd_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cbd_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cbd_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cbd_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cbd_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cbd_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
 
-                # cenario otimizado difuso
-                botao_cod_DBO["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_DBO, 0,restricao_DBO, tam_cel, tam_rio, classe)  # DBO
-                botao_cod_OD["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
-                botao_cod_NORG["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
-                botao_cod_NAMON["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
-                botao_cod_NNITR["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
-                botao_cod_NNITRA["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
-                botao_cod_PORG["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
-                botao_cod_PINORG["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+                    # cenario otimizado difuso
+                    botao_cod_DBO = Button(canvas_graficos, width=11, text="DBO")
+                    botao_cod_OD = Button(canvas_graficos, width=11, text="OD")
+                    botao_cod_NORG = Button(canvas_graficos, width=11, text="Norg")
+                    botao_cod_NAMON = Button(canvas_graficos, width=11, text="Namon")
+                    botao_cod_NNITR = Button(canvas_graficos, width=11, text="Nnitr")
+                    botao_cod_NNITRA = Button(canvas_graficos, width=11, text="Nnitra")
+                    botao_cod_PORG = Button(canvas_graficos, width=11, text="Porg")
+                    botao_cod_PINORG = Button(canvas_graficos, width=11, text="Pinorg")
+
+                    # Localizando todos os componentes
+                    canvas_graficos.place(x=0, y=250)
+                    saidas.place(x=0, y=0)
+                    label_graf.place(x=2, y=2)
+                    label_gbp.place(x=2, y=25)
+                    label_gop.place(x=2, y=85)
+                    label_gbd.place(x=2, y=145)
+                    label_god.place(x=2, y=205)
+                    label_caixa_textos.place(x=2, y=2)
+                    botao_cbp_DBO.place(x=8, y=55)
+                    botao_cbp_OD.place(x=105, y=55)
+                    botao_cbp_NORG.place(x=205, y=55)
+                    botao_cbp_NAMON.place(x=305, y=55)
+                    botao_cbp_NNITR.place(x=405, y=55)
+                    botao_cbp_NNITRA.place(x=505, y=55)
+                    botao_cbp_PORG.place(x=605, y=55)
+                    botao_cbp_PINORG.place(x=705, y=55)
+                    botao_cop_DBO.place(x=8, y=115)
+                    botao_cop_OD.place(x=105, y=115)
+                    botao_cop_NORG.place(x=205, y=115)
+                    botao_cop_NAMON.place(x=305, y=115)
+                    botao_cop_NNITR.place(x=405, y=115)
+                    botao_cop_NNITRA.place(x=505, y=115)
+                    botao_cop_PORG.place(x=605, y=115)
+                    botao_cop_PINORG.place(x=705, y=115)
+                    botao_cbd_DBO.place(x=8, y=175)
+                    botao_cbd_OD.place(x=105, y=175)
+                    botao_cbd_NORG.place(x=205, y=175)
+                    botao_cbd_NAMON.place(x=305, y=175)
+                    botao_cbd_NNITR.place(x=405, y=175)
+                    botao_cbd_NNITRA.place(x=505, y=175)
+                    botao_cbd_PORG.place(x=605, y=175)
+                    botao_cbd_PINORG.place(x=705, y=175)
+                    botao_cod_DBO.place(x=8, y=235)
+                    botao_cod_OD.place(x=105, y=235)
+                    botao_cod_NORG.place(x=205, y=235)
+                    botao_cod_NAMON.place(x=305, y=235)
+                    botao_cod_NNITR.place(x=405, y=235)
+                    botao_cod_NNITRA.place(x=505, y=235)
+                    botao_cod_PORG.place(x=605, y=235)
+                    botao_cod_PINORG.place(x=705, y=235)
+                
+                    # cenario fo
+                    botao_foP["command"] = partial(gera_grafico_fo, historico_foP, iteracao_versao_rapidaP)
+                    botao_fo["command"] = partial(gera_grafico_fo, historico_fo, iteracao_versao_rapida)
+
+                    # cenario do tempo das iteracoes
+                    botao_tempoP["command"] = partial(gera_grafico_tempo_iteracoes, historico_tempo_iteracoesP, iteracao_versao_rapidaP)
+                    botao_tempo["command"] = partial(gera_grafico_tempo_iteracoes, historico_tempo_iteracoes, iteracao_versao_rapida)
+
+                    # cenario filhos invalidos
+                    botao_invalidosP["command"] = partial(gera_grafico_filhos_invalidos, historico_filhos_invalidosP, iteracao_versao_rapidaP)
+                    botao_invalidos["command"] = partial(gera_grafico_filhos_invalidos, historico_filhos_invalidos, iteracao_versao_rapida)
+
+                    # cenario vazao
+                    botao_vazaoP["command"] = partial(gera_grafico_vazao, perfilQP, tam_cel, tam_rio)
+                    botao_vazao["command"] = partial(gera_grafico_vazao, perfilQ, tam_cel, tam_rio)
+
+                    # cenario base pontual
+                    botao_cbp_DBO["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbp_OD["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbp_NORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbp_NAMON["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbp_NNITR["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbp_NNITRA["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbp_PORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbp_PINORG["command"] = partial(gera_grafico, cenario_base_pontual[0].Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+
+                    # cenario otimizado pontual
+                    botao_cop_DBO["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cop_OD["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cop_NORG["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cop_NAMON["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cop_NNITR["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cop_NNITRA["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cop_PORG["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cop_PINORG["command"] = partial(gera_grafico, melhor_solucao_pontual.cenario.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+
+                    # cenario base difuso
+                    botao_cbd_DBO["command"] = partial(gera_grafico, cenario_base_difusa.Y_DBO, 0, restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cbd_OD["command"] = partial(gera_grafico, cenario_base_difusa.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cbd_NORG["command"] = partial(gera_grafico, cenario_base_difusa.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cbd_NAMON["command"] = partial(gera_grafico, cenario_base_difusa.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cbd_NNITR["command"] = partial(gera_grafico, cenario_base_difusa.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cbd_NNITRA["command"] = partial(gera_grafico, cenario_base_difusa.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cbd_PORG["command"] = partial(gera_grafico, cenario_base_difusa.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cbd_PINORG["command"] = partial(gera_grafico, cenario_base_difusa.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
+
+                    # cenario otimizado difuso
+                    botao_cod_DBO["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_DBO, 0,restricao_DBO, tam_cel, tam_rio, classe)  # DBO
+                    botao_cod_OD["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_OD, 1, restricao_OD, tam_cel, tam_rio, classe)  # OD
+                    botao_cod_NORG["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Norg, 2, None, tam_cel, tam_rio, classe)  # NORG
+                    botao_cod_NAMON["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Namon, 3, restricao_NAMON, tam_cel, tam_rio, classe)  # NAMON
+                    botao_cod_NNITR["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Nnitri, 4, restricao_NNITR, tam_cel, tam_rio, classe)  # NNITRI
+                    botao_cod_NNITRA["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Nnitra, 5, restricao_NNITRA, tam_cel, tam_rio, classe)  # NNITRA
+                    botao_cod_PORG["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Porg, 6, restricao_PORG, tam_cel, tam_rio, classe)  # PORG
+                    botao_cod_PINORG["command"] = partial(gera_grafico, melhor_solucao_difusa.cenario.Y_Pinorg, 7, None, tam_cel, tam_rio, classe)  # PINORG
 
 Janela_inicial()
