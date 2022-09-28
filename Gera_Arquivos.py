@@ -1,13 +1,10 @@
 from os import mkdir, path, remove
 from shutil import rmtree
-from platform import system
 
 # METODO DE MANIPULACAO DE FLOAT
 def converte_float(valor):
-    if system() != 'Linux':
-        if valor.find("."):
-            return valor.replace(".",",")
-    else: return valor
+    if valor.find("."):
+        return valor.replace(".",",")
 
 # METODOS DE CHECAGEM DE ARQUIVO E DIRETORIO
 def checa_arquivo(arquivo):

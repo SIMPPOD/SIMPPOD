@@ -2,6 +2,7 @@
 # Modulo: Otimizacao
 
 # Importacao de bibliotecas
+from asyncio.windows_events import NULL
 from Populacao import Populacao
 from QUAL_UFMG import QUAL_UFMG
 from Leitura import *
@@ -108,6 +109,9 @@ class Otimizacao:
             ef_minima = self.calcula_ef_minima(Rio, matriz_contribuicoes)
 
             cenario_sem_otimizacao = cenario_base.executa(Rio, matriz_contribuicoes, self.matriz_reducao_pontual, simula_difusa, [], scs, FO_pontual, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios)
+            if self.matriz_reducao_pontual[1] == []:
+                return [cenario_sem_otimizacao, None, None, None, tam_rio, tam_cel, None, None, None, None, None, None, ph, None, Rio]
+
             for i in range(int(matriz_brkga[0][1])):  # para cada populacao
                 aux = Populacao(matriz_brkga[0][7], matriz_brkga[0][0], len(self.matriz_reducao_pontual[1]), matriz_contribuicoes, Rio, cenario_base, self.matriz_reducao_pontual, ef_minima, matriz_brkga[0][6], simula_difusa, vetor_pesos_pontual, vetor_pesos_difusa, scs, modo_otimizacao, matriz_tipo_contribuicoes, tributarios, celula_entrada_tributarios)
                 # aux = Populacao(pe, tam_populacao, tam_cromossomo, Entrada_Pontual.txt, Rio, cenario_base, matriz_reducao_pontual, ef_minima, funcao objetivo, simula_difusa, vetor_pesos_pontual, vetor_difusa, scs)

@@ -346,18 +346,28 @@ def executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_texto, 
 
             for i in range(len(vetor_caminhos[1])):
                 [cenario_base_pontual_tributario, melhores_solucoes_pontual_tributario, tempo_pontual_tributario, tempo_pontual_rapida_tributario, tam_rio, tam_cel, vetor_invalidos_pontual_tributario, vetor_invalidos_pontual_rapida_tributario, historico_fo_pontual_tributario, historico_tempo_iteracoes_pontual_tributario, historico_filhos_invalidos_pontual_tributario, iteracao_versao_rapida_pontual_tributario, ph, melhor_solucao_pontual_rapida_tributario, rio] = otimizacao.executa(vetor_caminhos[1][i], False, modo_otimizacao.get(), None, None)
-                melhor_solucao_pontual_tributario = melhores_solucoes_pontual_tributario[-1]
+                
+                if melhores_solucoes_pontual_tributario:
+                    melhor_solucao_pontual_tributario = melhores_solucoes_pontual_tributario[-1]
+                    cenario_base_pontual_tributarios.append(cenario_base_pontual_tributario)
+                    melhor_solucao_pontual_tributarios.append(melhor_solucao_pontual_tributario.cenario)
+                    historico_fo_pontual_tributarios.append(historico_fo_pontual_tributario)
+                    historico_tempo_iteracoes_pontual_tributarios.append(historico_tempo_iteracoes_pontual_tributario)
+                    historico_filhos_invalidos_pontual_tributarios.append(historico_filhos_invalidos_pontual_tributario)
+                    iteracao_versao_rapida_pontual_tributarios.append(iteracao_versao_rapida_pontual_tributario)
+                    perfilQ_pontual_tributarios.append(melhor_solucao_pontual_tributario.cenario.PerfilQ)
+                    celula_entrada_tributarios.append(rio.Nt)
 
-                cenario_base_pontual_tributarios.append(cenario_base_pontual_tributario)
-                melhor_solucao_pontual_tributarios.append(melhor_solucao_pontual_tributario.cenario)
-                historico_fo_pontual_tributarios.append(historico_fo_pontual_tributario)
-                historico_tempo_iteracoes_pontual_tributarios.append(historico_tempo_iteracoes_pontual_tributario)
-                historico_filhos_invalidos_pontual_tributarios.append(historico_filhos_invalidos_pontual_tributario)
-                iteracao_versao_rapida_pontual_tributarios.append(iteracao_versao_rapida_pontual_tributario)
-                perfilQ_pontual_tributarios.append(melhor_solucao_pontual_tributario.cenario.PerfilQ)
-                celula_entrada_tributarios.append(rio.Nt)
+                    gera_saida_otimizado_pontual(diretorio_saidas, cenario_base_pontual_tributario, melhor_solucao_pontual_tributario, melhor_solucao_pontual_rapida_tributario, tam_rio, tam_cel, tempo_pontual_tributario, tempo_pontual_rapida_tributario, vetor_invalidos_pontual_tributario, vetor_invalidos_pontual_rapida_tributario, i)
+            
+                else:
+                    melhor_solucao_pontual_tributario = cenario_base_pontual_tributario
+                    cenario_base_pontual_tributarios.append(cenario_base_pontual_tributario)
+                    melhor_solucao_pontual_tributarios.append(melhor_solucao_pontual_tributario)
+                    celula_entrada_tributarios.append(rio.Nt)
 
-                gera_saida_otimizado_pontual(diretorio_saidas, cenario_base_pontual_tributario, melhor_solucao_pontual_tributario, melhor_solucao_pontual_rapida_tributario, tam_rio, tam_cel, tempo_pontual_tributario, tempo_pontual_rapida_tributario, vetor_invalidos_pontual_tributario, vetor_invalidos_pontual_rapida_tributario, i)
+                    gera_saida_base_pontual(diretorio_saidas, cenario_base_pontual_tributario, tam_rio, tam_cel, i)
+            
             [cenario_base_pontual_rio, melhores_solucoes_pontual_rio, tempo_pontual_rio, tempo_pontual_rapida_rio, tam_rio, tam_cel, vetor_invalidos_pontual_rio, vetor_invalidos_pontual_rapida_rio, historico_fo_pontual_rio, historico_tempo_iteracoes_pontual_rio, historico_filhos_invalidos_pontual_rio, iteracao_versao_rapida_pontual_rio, ph, melhor_solucao_pontual_rapida_rio, rio] = otimizacao.executa(vetor_caminhos[0], False, modo_otimizacao.get(), melhor_solucao_pontual_tributarios, celula_entrada_tributarios)
             melhor_solucao_pontual_rio = melhores_solucoes_pontual_rio[-1]
 

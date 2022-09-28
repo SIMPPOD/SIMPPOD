@@ -16,7 +16,10 @@ def ler_entrada_pontual(arquivo):
     for i in range(df.shape[0]):
         contribuicao = df.values[i]
         matriz_tipo_contribuicoes.append(contribuicao[df.shape[1]-1])
-           
+        
+        for j in range(len(contribuicao)-1):
+            contribuicao[j] = float(contribuicao[j])
+    
         if contribuicao[10] == 1:  # Se ExR for 1
             if contribuicao[11] != 0:  # Se %R nao for 0
                 contribuicao[11] = contribuicao[11]/100 
@@ -35,7 +38,7 @@ def ler_entrada_constantes(arquivo):
 
     for i in range(df.shape[0]):
         constante = df.values[i]
-        constantes.append(constante[1])
+        constantes.append(float(constante[1]))
 
     return constantes
 
@@ -48,6 +51,9 @@ def ler_entrada_hidro(arquivo):
     
     for i in range(df.shape[0]):
         valores = df.values[i][:df.shape[1]-2]
+
+        for j in range(len(valores)):
+            valores[j] = float(valores[j])
         matriz.append(valores.tolist())
     
     fator = df.values[0, df.shape[1]-2]
@@ -63,7 +69,9 @@ def ler_entrada_cn(arquivo):
     matriz = []
 
     for i in range(df.shape[0]):
-        valores = df.values[i]   
+        valores = df.values[i]
+        for j in range(len(valores)):
+            valores[j] = float(valores[j])       
         matriz.append(valores.tolist())
 
     return matriz
@@ -77,6 +85,9 @@ def ler_entrada_cme(arquivo):
 
     for i in range(df.shape[0]):
         valores = df.values[i]
+        for j in range(len(valores)):
+            if j != 1:
+                valores[j] = float(valores[j]) 
         matriz.append(valores.tolist())
 
     return matriz
@@ -89,7 +100,9 @@ def ler_entrada_usos(arquivo):
     matriz = []
 
     for i in range(df.shape[0]):
-        valores = df.values[i]    
+        valores = df.values[i]
+        for j in range(len(valores)):
+            valores[j] = float(valores[j])       
         matriz.append(valores.tolist())
 
     return matriz
@@ -105,6 +118,8 @@ def ler_entrada_otimizacao(arquivo):
 
     for i in range(df.shape[0]):
         valores = df.values[i]
+        for j in range(len(valores)):
+            valores[j] = float(valores[j])
         matriz_brkga.append(valores.tolist())
 
     for i in range(8,10):
