@@ -1,0 +1,29 @@
+**Sobre o SIMPPOD**
+
+O Sistema Integrado de Modelagem de Poluição Pontual e Difusa (SIMPPOD) foi desenvolvido na Universidade Federal do Espírito Santo (UFES), no âmbito do projeto “Planejamento Integrado de Controle e Redução de Cargas Pontuais e Difusas de Poluição em Bacias Hidrográficas”, sendo um Sistema de Suporte a Decisão (SSD) idealizado pela Dra. Selena Lopes Carvalho em seu doutorado.
+
+O Projeto é uma parceria entre os Departamentos de Engenharia Ambiental (DEA) e Departamento de Informática (DI) da UFES, o qual foi coordenado pelo professor Dr. Antônio Sérgio Ferreira Mendonça, tendo a professora Dra. Lúcia Catabriga como orientadora e os alunos Juliane Azeredo Ferreira e Luiz Felipe Oliveira Ribeiro como desenvolvedores.
+
+A Lei Federal nº 9433 de 1997 instituiu, no Brasil, os Planos de Recursos Hídricos e o Enquadramento dos corpos d’água em classes de qualidade como instrumentos da Política Nacional de Recursos Hídricos. As classes de qualidade de água referem-se a diferentes conjuntos de características físicas, químicas e biológicas que viabilizam o uso da água desejado (consumo humano, pesca, indústria, etc). 
+
+Portanto, para um determinado uso desejado, estabeleceu um padrão de qualidade, e para que se alcance este padrão se fazem necessários o planejamento e a gestão de diferentes ações e intervenções que o viabilizem, as quais devem fazer parte do Plano de Recursos Hídricos e do Programa de Efetivação do Enquadramento. Este conjunto de medidas pode englobar ações, métodos e técnicas, estruturais ou não estruturais, e intervenções diretas ou indiretas, sendo, portanto, consideravelmente complexo e diverso. 
+
+De modo geral, o foco destas ações e intervenções concentra-se, principalmente, em controlar e reduzir o aporte de cargas poluidoras aos recursos hídricos, em quantidade suficiente para que o corpo receptor atinja e mantenha o padrão de classe desejado no Enquadramento. Neste contexto, a Dra. Selena Lopes Carvalho propôs um Sistema de Suporte a Decisão como ferramenta de apoio ao processo de Enquadramento, o qual foi intitulado de Sistema Integrado de Modelagem de Poluição Pontual e Difusa (SIMPPOD).
+
+O processo de Enquadramento é composto essencialmente de 5 etapas: Diagnóstico da bacia hidrográfica, Prognóstico (cenários futuros), Elaboração das alternativas de enquadramento e programa de efetivação, Análise e deliberação do Comitê e do Conselho de Recursos Hídricos e por fim, a Implementação do programa de efetivação do enquadramento.
+
+O SIMPPOD atua nas etapas de Diagnóstico e Prognóstico, na primeira ao estimar a produção de cargas de poluição difusas e, na segunda etapa, ao possibilitar a simulação de diferentes quadros e cenários de qualidade de água diante das contribuições pontuais e difusas que são aportadas ao curso d’água, as quais foram identificadas na etapa de Diagnóstico. Além disso identifica as eficiências mínimas de remoção que devem ser aplicadas às fontes poluidoras para que a condição de qualidade de água, representada pela classe desejada no Enquadramento, seja alcançada.
+
+**Idealizadores**
+
+Doutora Selena Lopes Carvalho: https://www.researchgate.net/profile/Selena-Carvalho-2
+
+Graduanda Juliane Azeredo Ferreira: https://www.researchgate.net/profile/Juliane-Ferreira-5
+
+Professora e Doutora Lucia Catabriga: https://www.researchgate.net/profile/Lucia-Catabriga
+
+**Redes Sociais**
+
+Youtube: https://youtube.com/channel/UCqoIAiQUCwtvXaqtJsacxEw
+
+Instagram: https://instagram.com/simppod_ssd?igshid=YmMyMTA2M2Y
