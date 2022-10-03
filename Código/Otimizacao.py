@@ -2,7 +2,6 @@
 # Modulo: Otimizacao
 
 # Importacao de bibliotecas
-from asyncio.windows_events import NULL
 from Populacao import Populacao
 from QUAL_UFMG import QUAL_UFMG
 from Leitura import *

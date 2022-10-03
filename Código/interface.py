@@ -7,7 +7,7 @@ from Gera_Gráficos import *
 from Main import executa
 
 from tkinter.messagebox import showerror
-from tkinter import CENTER, Tk, LEFT
+from tkinter import Tk, LEFT
 from tkinter import Button, Checkbutton, Radiobutton
 from tkinter import IntVar, StringVar
 from tkinter import Canvas, Frame, Label
