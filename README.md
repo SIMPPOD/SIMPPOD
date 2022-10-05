@@ -1,4 +1,4 @@
-# SIMPPOD
+# SIMPPOD - Sistema Integrado de Modelagem de Poluição Pontual e Difusa
 
 ## Execução
 1. Faça o [download](https://github.com/SIMPPOD/SIMPPOD/releases/download/SIMPPOD/SIMPPOD.zip)
