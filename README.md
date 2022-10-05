@@ -1,4 +1,11 @@
-**Sobre o SIMPPOD**
+# SIMPPOD
+
+## Execução
+1. Faça o [download](https://github.com/SIMPPOD/SIMPPOD/releases/download/SIMPPOD/SIMPPOD.zip)
+2. Extraia o arquivo `SIMPPOD.zip`
+3. Entre na pasta raiz e execute o arquivo `SIMPPOD.exe`
+
+## Sobre o SIMPPOD
 
 O Sistema Integrado de Modelagem de Poluição Pontual e Difusa (SIMPPOD) foi desenvolvido na Universidade Federal do Espírito Santo (UFES), no âmbito do projeto “Planejamento Integrado de Controle e Redução de Cargas Pontuais e Difusas de Poluição em Bacias Hidrográficas”, sendo um Sistema de Suporte a Decisão (SSD) idealizado pela Dra. Selena Lopes Carvalho em seu doutorado.
 
@@ -14,7 +21,7 @@ O processo de Enquadramento é composto essencialmente de 5 etapas: Diagnóstico
 
 O SIMPPOD atua nas etapas de Diagnóstico e Prognóstico, na primeira ao estimar a produção de cargas de poluição difusas e, na segunda etapa, ao possibilitar a simulação de diferentes quadros e cenários de qualidade de água diante das contribuições pontuais e difusas que são aportadas ao curso d’água, as quais foram identificadas na etapa de Diagnóstico. Além disso identifica as eficiências mínimas de remoção que devem ser aplicadas às fontes poluidoras para que a condição de qualidade de água, representada pela classe desejada no Enquadramento, seja alcançada.
 
-**Idealizadores**
+## Idealizadores
 
 Doutora Selena Lopes Carvalho: https://www.researchgate.net/profile/Selena-Carvalho-2
 
@@ -22,8 +29,8 @@ Graduanda Juliane Azeredo Ferreira: https://www.researchgate.net/profile/Juliane
 
 Professora e Doutora Lucia Catabriga: https://www.researchgate.net/profile/Lucia-Catabriga
 
-**Redes Sociais**
+## Redes Sociais
 
-Youtube: https://youtube.com/channel/UCqoIAiQUCwtvXaqtJsacxEw
+[Youtube](https://youtube.com/channel/UCqoIAiQUCwtvXaqtJsacxEw)
 
-Instagram: https://instagram.com/simppod_ssd?igshid=YmMyMTA2M2Y
+[Instagram](https://instagram.com/simppod_ssd?igshid=YmMyMTA2M2Y)
