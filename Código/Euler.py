@@ -5,7 +5,6 @@
 o metodo de Euler para a resolucao de um sistema de equacoes
 diferenciais ordinarias e de primeira ordem. """
 
-# Importacao de bibliotecas
 from math import exp
 from Cenario import Cenario
 from Constantes import Constantes
@@ -13,13 +12,10 @@ from Constantes import Constantes
 # Definicao da classe
 class Euler(object):
 
-    # METODOS
-
-    # Metodo que verifica se, no passo atual do Euler, existe uma nova contribuicao
     @staticmethod
     def existe_nova_contribuicao(j, i, matriz_contribuicoes):
         if j + 1 <= len(matriz_contribuicoes):
-            if matriz_contribuicoes[j][9] == i:  # Se N == i
+            if matriz_contribuicoes[j][10] == i:  # Se N == i
                 return True
             else:
                 return False
@@ -29,11 +25,11 @@ class Euler(object):
     @staticmethod
     def junta_matriz_contribuicoes(matriz_contribuicoes, tributarios, celula_entrada_tributario):
         for i in range(len(tributarios)):
-            tributario = [tributarios[i].Y_DBO[-1], tributarios[i].Y_OD[-1], tributarios[i].Y_Norg[-1], tributarios[i].Y_Namon[-1], tributarios[i].Y_Nnitri[-1], tributarios[i].Y_Nnitra[-1], tributarios[i].Y_Porg[-1], tributarios[i].Y_Pinorg[-1], tributarios[i].PerfilQ[-1], celula_entrada_tributario[i], 0, 0, 0, 0, "T"]
+            tributario = [tributarios[i].Y_DBO[-1], tributarios[i].Y_OD[-1], tributarios[i].Y_Norg[-1], tributarios[i].Y_Namon[-1], tributarios[i].Y_Nnitri[-1], tributarios[i].Y_Nnitra[-1], tributarios[i].Y_Porg[-1], tributarios[i].Y_Pinorg[-1], tributarios[i].Y_Coliformes[-1], tributarios[i].PerfilQ[-1], celula_entrada_tributario[i], 0, 0, 0, 0, "T"]
             matriz_contribuicoes.append(tributario)
         celulas_entrada = []
         for i in range(len(matriz_contribuicoes)):
-            celulas_entrada.append(matriz_contribuicoes[i][9])
+            celulas_entrada.append(matriz_contribuicoes[i][10])
         celulas_entrada.sort()
         return celulas_entrada
         
@@ -41,27 +37,26 @@ class Euler(object):
     def ordena_matriz_contribuicoes(matriz_contribuicoes, tributarios, celula_entrada_tributario, matriz_tipo_contribuicoes):
         aux = matriz_contribuicoes.copy()
         for i in range(len(tributarios)):
-            tributario = [tributarios[i].Y_DBO[-1], tributarios[i].Y_OD[-1], tributarios[i].Y_Norg[-1], tributarios[i].Y_Namon[-1], tributarios[i].Y_Nnitri[-1], tributarios[i].Y_Nnitra[-1], tributarios[i].Y_Porg[-1], tributarios[i].Y_Pinorg[-1], tributarios[i].PerfilQ[-1], celula_entrada_tributario[i], 0, 0, 0, 0, "T"]
+            tributario = [tributarios[i].Y_DBO[-1], tributarios[i].Y_OD[-1], tributarios[i].Y_Norg[-1], tributarios[i].Y_Namon[-1], tributarios[i].Y_Nnitri[-1], tributarios[i].Y_Nnitra[-1], tributarios[i].Y_Porg[-1], tributarios[i].Y_Pinorg[-1], tributarios[i].Y_Coliformes[-1], tributarios[i].PerfilQ[-1], celula_entrada_tributario[i], 0, 0, 0, 0, "T"]
             aux.append(tributario)
             matriz_tipo_contribuicoes.append("T")
 
         celulas_entrada = []
         for i in range(len(aux)):
-            celulas_entrada.append(aux[i][9])
+            celulas_entrada.append(aux[i][10])
         celulas_entrada.sort()
 
         matriz_contribuicoes_ordenada = []
         matriz_tipo_contribuicoes_ordenada = []
         for i in range(len(celulas_entrada)):
             for j in range(len(aux)):
-                if aux[j][9] == celulas_entrada[i]:
+                if aux[j][10] == celulas_entrada[i]:
                     matriz_contribuicoes_ordenada.append(aux[j])
                     matriz_tipo_contribuicoes_ordenada.append(aux[j][-1])
         return [matriz_contribuicoes_ordenada, matriz_tipo_contribuicoes_ordenada]
 
     # Metodo que faz o calculo do metodo de Euler, considerando tanto novas contribuicoes quanto novas reducoes
     def Calcula(self, Rio, matriz_contribuicoes, matriz_tipo_contribuicoes, simula_difusa, tributarios, celula_entrada_tributarios):
-        #Total de celulas no rio
         num_cel = Rio.tam_rio / Rio.tam_cel
         num_cel = int(num_cel)
 
@@ -84,7 +79,8 @@ class Euler(object):
         Mistura_NNITRA = [Rio.NNITRAr]
         Mistura_PORG = [Rio.PORGr]
         Mistura_PINORG = [Rio.PINORGr]
-
+        Mistura_COL = [Rio.COLr] # em L
+    
         Modelagem_DBO = [Rio.DBO5r]
         Modelagem_OD = [Rio.ODr]
         Modelagem_Norg = [Rio.NORGr]
@@ -93,39 +89,42 @@ class Euler(object):
         Modelagem_Nnitra = [Rio.NNITRAr]
         Modelagem_Porg = [Rio.PORGr]
         Modelagem_Pinorg = [Rio.PINORGr]
+        Modelagem_COL = [Rio.COLr] # em L
 
         ODsat = (1-Rio.Alt/9450) * (14.652 - (0.41022 * Rio.T) + (0.007991 * (Rio.T ** 2)) - (0.000077774 * (Rio.T ** 3)))
         Q = Rio.Qr
         v = Rio.a_vel*(Q**Rio.b_vel)
         H = Rio.a_prof*(Q**Rio.b_prof)
 
-        Const = Constantes(Rio.K1, Rio.K2, Rio.Ks, Rio.Koa, Rio.Kan, Rio.Knn, Rio.Kspo, Rio.Koi, Rio.Kso, Rio.Kt, Rio.Samon, Rio.Sd, Rio.Lrd, Rio.Sinorg)
-        Const.set_constantes(1.047, 1.024, 1.024, 1.047, 1.080, 1.047, 1.024, 1.047, 1.024, 1.047, 1.074, 1.060, 1.074, Rio.T, Rio.Qr, H, v)
-        
+        Const = Constantes(Rio.K1, Rio.Ks, Rio.Koa, Rio.Kan, Rio.Knn, Rio.Kspo, Rio.Koi, Rio.Kso, Rio.Kt, Rio.Kb, Rio.Samon, Rio.Sd, Rio.Lrd, Rio.Sinorg)
+        Const.set_constantes(1.047, 1.024, 1.024, 1.047, 1.080, 1.047, 1.024, 1.047, 1.024, 1.047, 1.074, 1.060, 1.074, 1.07, Rio.T, Rio.Qr, H, v)
+
         if tributarios:
+            for i in range(len(celula_entrada_tributarios)): celula_entrada_tributarios[i] *= 1000 / Rio.tam_cel
             [matriz_contribuicoes, matriz_tipo_contribuicoes] = self.ordena_matriz_contribuicoes(matriz_contribuicoes, tributarios, celula_entrada_tributarios, matriz_tipo_contribuicoes)
+        
         j = 0
         for i in range(1, num_cel + 1):
             if Mistura_OD[i-1] <= 0: fnitr = 0.00001
             else: fnitr = 1 - (exp(-Rio.Knitr*Mistura_OD[i-1]))
-
             if self.existe_nova_contribuicao(j, i, matriz_contribuicoes):
-                Mistura_DBO.append(Rio.eq_mistura_DBO(Modelagem_DBO[i-1], matriz_contribuicoes[j][0], Q, matriz_contribuicoes[j][8]))
-                Mistura_OD.append(Rio.eq_mistura_OD(Modelagem_OD[i-1], matriz_contribuicoes[j][1], Q, matriz_contribuicoes[j][8]))
-                Mistura_NORG.append(Rio.eq_mistura_Norg(Modelagem_Norg[i-1], matriz_contribuicoes[j][2], Q, matriz_contribuicoes[j][8]))
-                Mistura_NAMON.append(Rio.eq_mistura_Namon(Modelagem_Namon[i-1], matriz_contribuicoes[j][3], Q, matriz_contribuicoes[j][8]))
-                Mistura_NNITRI.append(Rio.eq_mistura_Nnitri(Modelagem_Nnitri[i-1], matriz_contribuicoes[j][4], Q, matriz_contribuicoes[j][8]))
-                Mistura_NNITRA.append(Rio.eq_mistura_Nnitra(Modelagem_Nnitra[i-1], matriz_contribuicoes[j][5], Q, matriz_contribuicoes[j][8]))
-                Mistura_PORG.append(Rio.eq_mistura_Porg(Modelagem_Porg[i-1], matriz_contribuicoes[j][6], Q, matriz_contribuicoes[j][8]))
-                Mistura_PINORG.append(Rio.eq_mistura_Pinorg(Modelagem_Pinorg[i-1], matriz_contribuicoes[j][7], Q, matriz_contribuicoes[j][8]))
-                
+                Mistura_DBO.append(Rio.eq_mistura_DBO(Modelagem_DBO[i-1], matriz_contribuicoes[j][0], Q, matriz_contribuicoes[j][9]))
+                Mistura_OD.append(Rio.eq_mistura_OD(Modelagem_OD[i-1], matriz_contribuicoes[j][1], Q, matriz_contribuicoes[j][9]))
+                Mistura_NORG.append(Rio.eq_mistura_Norg(Modelagem_Norg[i-1], matriz_contribuicoes[j][2], Q, matriz_contribuicoes[j][9]))
+                Mistura_NAMON.append(Rio.eq_mistura_Namon(Modelagem_Namon[i-1], matriz_contribuicoes[j][3], Q, matriz_contribuicoes[j][9]))
+                Mistura_NNITRI.append(Rio.eq_mistura_Nnitri(Modelagem_Nnitri[i-1], matriz_contribuicoes[j][4], Q, matriz_contribuicoes[j][9]))
+                Mistura_NNITRA.append(Rio.eq_mistura_Nnitra(Modelagem_Nnitra[i-1], matriz_contribuicoes[j][5], Q, matriz_contribuicoes[j][9]))
+                Mistura_PORG.append(Rio.eq_mistura_Porg(Modelagem_Porg[i-1], matriz_contribuicoes[j][6], Q, matriz_contribuicoes[j][9]))
+                Mistura_PINORG.append(Rio.eq_mistura_Pinorg(Modelagem_Pinorg[i-1], matriz_contribuicoes[j][7], Q, matriz_contribuicoes[j][9]))
+                Mistura_COL.append(Rio.eq_mistura_Coliformes(Modelagem_COL[i-1], matriz_contribuicoes[j][8]*10, Q, matriz_contribuicoes[j][9]))  # passa COLe para L 
+                                 
                 if simula_difusa:
-                    Q += matriz_contribuicoes[j][8] + Rio.Qinc  # Q = Q + Qe + Qinc
+                    Q += matriz_contribuicoes[j][9] + Rio.Qinc  # Q = Q + Qe + Qinc
                 else: 
                     if matriz_tipo_contribuicoes[j] != "C":
-                        Q += matriz_contribuicoes[j][8] + Rio.Qinc  # Q = Q + Qe + Qinc
+                        Q += matriz_contribuicoes[j][9] + Rio.Qinc  # Q = Q + Qe + Qinc
                     else:
-                        Q = Q - matriz_contribuicoes[j][8] + Rio.Qinc  # Q = Q - Qe + Qinc
+                        Q = Q - matriz_contribuicoes[j][9] + Rio.Qinc  # Q = Q - Qe + Qinc
                 
                 j += 1
 
@@ -138,6 +137,7 @@ class Euler(object):
                 Mistura_NNITRA.append(Rio.eq_mistura_Nnitra(Modelagem_Nnitra[i-1], 0, Q, 0))
                 Mistura_PORG.append(Rio.eq_mistura_Porg(Modelagem_Porg[i-1], 0, Q, 0))
                 Mistura_PINORG.append(Rio.eq_mistura_Pinorg(Modelagem_Pinorg[i-1], 0, Q, 0))
+                Mistura_COL.append(Rio.eq_mistura_Coliformes(Modelagem_COL[i-1], 0, Q, 0))  # em L
 
                 Q = Q + Rio.Qinc
 
@@ -155,7 +155,7 @@ class Euler(object):
             Const.Spinorg = Const.corrige_Spinorg(Rio.Sinorg, 1.074, Rio.T, 20, H)
             Const.Samon = Const.corrige_Samon(Rio.Samon, 1.074, Rio.T, 20, H)
             Const.Sd = Const.corrige_Sd(Rio.Sd, 1.060, Rio.T, 20, H)
-
+            
             perfilK2.append(Const.K2)
             perfilKd.append(Const.Kd)
             perfilQ.append(Q)
@@ -168,10 +168,21 @@ class Euler(object):
             Modelagem_Namon.append(Mistura_NAMON[i] + tempo * (Const.Koa*Mistura_NORG[i] - fnitr*Const.Kan*Mistura_NAMON[i] + Const.Samon/H))
             Modelagem_Nnitri.append(Mistura_NNITRI[i] + tempo * (fnitr*Const.Kan*Mistura_NAMON[i] - fnitr*Const.Knn*Mistura_NNITRI[i]))
             Modelagem_Nnitra.append(Mistura_NNITRA[i] + tempo * (fnitr*Const.Knn*Mistura_NNITRI[i]))
-            Modelagem_OD.append(Mistura_OD[i] + tempo * (Const.K2*(ODsat - Mistura_OD[i]) - Const.Kd*Mistura_DBO[i]*Const.Kt - Rio.Ro2a*Mistura_NAMON[i]*Const.Kan*fnitr - Rio.Ro2n*Mistura_NNITRI[i]*Const.Knn*fnitr - Const.Sd))
+
+            modelagem_od = Mistura_OD[i] + tempo * (Const.K2*(ODsat - Mistura_OD[i]) - Const.Kd*Mistura_DBO[i]*Const.Kt - Rio.Ro2a*Mistura_NAMON[i]*Const.Kan*fnitr - Rio.Ro2n*Mistura_NNITRI[i]*Const.Knn*fnitr - Const.Sd)
+            if modelagem_od <= ODsat:
+                if modelagem_od >= 0: Modelagem_OD.append(modelagem_od)
+                else: Modelagem_OD.append(0)
+            else: Modelagem_OD.append(ODsat)            
+            
             Modelagem_Porg.append(Mistura_PORG[i] - tempo * (Mistura_PORG[i]*(Const.Koi + Const.Kspo))) 
             Modelagem_Pinorg.append(Mistura_PINORG[i] + tempo * (Const.Koi*Mistura_PORG[i] + Const.Spinorg/H))
+
+            modelagem_col = Mistura_COL[i] - tempo * (Mistura_COL[i]*Const.Kb)
+            if modelagem_col >= 0: Modelagem_COL.append(modelagem_col)  # em L
+            else: Modelagem_COL.append(0)
+
         Amonia = [Amonia_livre, Amonia_ionizada]
+        cenario = Cenario(Modelagem_DBO, Modelagem_OD, Modelagem_Norg, Modelagem_Namon, Modelagem_Nnitri, Modelagem_Nnitra, Modelagem_Porg, Modelagem_Pinorg, Modelagem_COL, Amonia, perfilK2, perfilKd, perfilQ, perfilV, perfilH, perfilTempo, matriz_contribuicoes)
         
-        cenario = Cenario(Modelagem_DBO, Modelagem_OD, Modelagem_Norg, Modelagem_Namon, Modelagem_Nnitri, Modelagem_Nnitra, Modelagem_Porg, Modelagem_Pinorg, Amonia, perfilK2, perfilKd, perfilQ, perfilV, perfilH, perfilTempo, matriz_contribuicoes)
         return cenario

@@ -2,7 +2,6 @@ from tkinter import Tk, TOP, BOTH
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
-# METODO QUE CRIA A RESTRIÇÃO
 def cria_vetor_restricao(indice, tam_rio, tam_cel, ph, classe):
     vetor_restricao = []
     for i in range(int(tam_rio/tam_cel)+1):
@@ -26,6 +25,8 @@ def cria_vetor_restricao(indice, tam_rio, tam_cel, ph, classe):
                 vetor_restricao.append(10)
             elif indice == 6:
                 vetor_restricao.append(0.1)
+            elif indice == 8:
+                vetor_restricao.append(200)
         elif classe == 2.0:
             if indice == 0:
                 vetor_restricao.append(5)
@@ -46,6 +47,8 @@ def cria_vetor_restricao(indice, tam_rio, tam_cel, ph, classe):
                 vetor_restricao.append(10)
             elif indice == 6:
                 vetor_restricao.append(0.1)
+            elif indice == 8:
+                vetor_restricao.append(1000)
         elif classe == 3.0:
             if indice == 0:
                     vetor_restricao.append(10)
@@ -66,6 +69,8 @@ def cria_vetor_restricao(indice, tam_rio, tam_cel, ph, classe):
                 vetor_restricao.append(10)
             elif indice == 6:
                 vetor_restricao.append(0.15)
+            elif indice == 8:
+                vetor_restricao.append(2500)
         elif classe == 4.0:
             if indice == 0:
                 vetor_restricao.append(30)
@@ -83,22 +88,23 @@ def cria_vetor_restricao(indice, tam_rio, tam_cel, ph, classe):
 
 # METODO QUE GERA OS GRÁFICOS DE SAÍDA
 def gera_grafico(serie_dados, indice, restricao, tam_cel, tam_rio, classe):
-    # Criacao da janela
     janela = Tk()
     janela.wm_title("Concentração(mg/L) do Parâmetro ao Longo do Curso D'água (células)")
 
-    # Plot do grafico
     fig = Figure(figsize=(6, 4), dpi=100)
 
     num_cel = tam_rio / tam_cel
     x = []
     for i in range(int(num_cel)+1):
         x.append(int(i*tam_rio/num_cel))
+    serie_dados[0] = serie_dados[1]
+    
+    if indice == 8: ax = fig.add_subplot(111, xlabel="Extensão [m]", ylabel="Unidade NMP/100mL")
+    else: ax = fig.add_subplot(111, xlabel="Extensão [m]", ylabel="Concentração [mg/L]")
 
-    ax = fig.add_subplot(111, xlabel="Extensão [m]", ylabel="Concentração [mg/L]")
     ax.plot(x, serie_dados, 'b')
 
-    if indice != 2 and indice < 6:
+    if indice != 2 and indice != 7:
         ax.plot(x, restricao, 'r')
     
     menor = min(serie_dados)
@@ -110,7 +116,6 @@ def gera_grafico(serie_dados, indice, restricao, tam_cel, tam_rio, classe):
                         ' | Média = ' + str(round(media,4)),
             horizontalalignment='left', verticalalignment='bottom', transform = ax.transAxes)
 
-    # Titulo do grafico, de acordo com o componente
     if indice == 0:
         fig.suptitle("Demanda Bioquímica de Oxigênio")
         ax.legend(['DBO', 'Limite da Classe ' + str(classe)])
@@ -132,11 +137,13 @@ def gera_grafico(serie_dados, indice, restricao, tam_cel, tam_rio, classe):
     elif indice == 6:
         fig.suptitle("Fósforo Orgânico")
         ax.legend(['PORG'])
-    else:
+    elif indice == 7:
         fig.suptitle("Fósforo Inorgânico")
         ax.legend(['PINORG'])
+    else:
+        fig.suptitle("Coliformes")
+        ax.legend(['Coliformes', 'Limite da Classe ' + str(classe)])
 
-    # Criacao da caixa de ferramentas
     canvas = FigureCanvasTkAgg(fig, master=janela)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
@@ -149,11 +156,9 @@ def gera_grafico(serie_dados, indice, restricao, tam_cel, tam_rio, classe):
 
 # METODO QUE GERA O GRÁFICO DO PERFIL DA VAZÃO
 def gera_grafico_vazao(serie_dados, tam_cel, tam_rio):
-    # Criacao da janela
     janela = Tk()
     janela.wm_title("Comportamento da Vazão ao Longo do Curso D'água (células)")
 
-    # Plot do grafico
     fig = Figure(figsize=(6, 4), dpi=100)
 
     num_cel = tam_rio / tam_cel
@@ -174,7 +179,6 @@ def gera_grafico_vazao(serie_dados, tam_cel, tam_rio):
                         ' | Média = ' + str(round(media,4)),
             horizontalalignment='left', verticalalignment='bottom', transform = ax.transAxes)
     
-    # Criacao da caixa de ferramentas
     canvas = FigureCanvasTkAgg(fig, master=janela)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
@@ -187,7 +191,6 @@ def gera_grafico_vazao(serie_dados, tam_cel, tam_rio):
 
 # METODO QUE GERA O GRÁFICO DO PERFIL DA FO
 def gera_grafico_fo(serie_dados, iteracao_versao_rapida):
-    # Criacao da janela
     janela = Tk()
     janela.wm_title("Comportamento da Função Objetivo ao Longo das Iterações")
 
@@ -201,7 +204,6 @@ def gera_grafico_fo(serie_dados, iteracao_versao_rapida):
     else:
         ax.legend(['FO'], loc='upper right')
 
-    # Criacao da caixa de ferramentas
     canvas = FigureCanvasTkAgg(fig, master=janela)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
@@ -214,7 +216,6 @@ def gera_grafico_fo(serie_dados, iteracao_versao_rapida):
 
 # METODO QUE GERA O GRÁFICO DO TEMPO DE CADA ITERAÇÃO DE OTIMIZAÇÃO
 def gera_grafico_tempo_iteracoes(serie_dados, iteracao_versao_rapida):
-    # Criacao da janela
     janela = Tk()
     janela.wm_title("Comportamento do Tempo de Duração das Iterações")
 
@@ -228,7 +229,6 @@ def gera_grafico_tempo_iteracoes(serie_dados, iteracao_versao_rapida):
     else:
         ax.legend(['Duração da iteração'], loc='upper right')
 
-    # Criacao da caixa de ferramentas
     canvas = FigureCanvasTkAgg(fig, master=janela)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
@@ -241,7 +241,6 @@ def gera_grafico_tempo_iteracoes(serie_dados, iteracao_versao_rapida):
 
 # METODO QUE GERA O GRÁFICO DOS FILHOS INVÁLIDOS GERADOS EM CADA ITERAÇÃO DE OTIMIZAÇÃO
 def gera_grafico_filhos_invalidos(serie_dados, iteracao_versao_rapida):
-    # Criacao da janela
     janela = Tk()
     janela.wm_title("Comportamento da Geração de Filhos Inválidos ao Longo das Iterações")
 
@@ -255,7 +254,6 @@ def gera_grafico_filhos_invalidos(serie_dados, iteracao_versao_rapida):
     else: 
         ax.legend(['Número de Filhos Inválidos'], loc='upper right')
         
-    # Criacao da caixa de ferramentas
     canvas = FigureCanvasTkAgg(fig, master=janela)
     canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)

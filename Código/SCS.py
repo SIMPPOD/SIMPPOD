@@ -1,39 +1,35 @@
 # -*- coding: utf-8 -*-
 # Modulo: SCS
 
-# Importacao de bibliotecas
 from Sub_bacia import Sub_bacia
 from Leitura import *
 
-# Definicao da classe
 class SCS(object):
 
-    # CONSTRUTOR
     def __init__(self, arquivo):
-        self.vetor_CN = []  # Vetor com calculos do CN
+        self.vetor_CN = [] 
         self.vetor_vazoes = []
-        [self.matriz_subbacias, self.tam_cel, self.fator] = ler_entrada_hidro(arquivo)  # Entrada_Hidro.txt = [ID,L,s,A,C,P,J,M,L_Rio,N,Altitude,Temp]
-        matriz_CN = ler_entrada_cn(arquivo)  # Entrada_CN.txt = [ID,Area,CN,Código]
-        self.matriz_CME = ler_entrada_cme(arquivo)  # Entrada_CME.txt = [Codigo,Uso do Solo,CME_DBO,CME_NTK,CME_NOX,CME_PINORG]
-        self.matriz_usos = ler_entrada_usos(arquivo)  # Entrada_Usos.txt = [ID,Area_codigo,Codigo]
-        self.matriz_cargas = []  # matriz n° subbacias x 4, com vetores [carga_DBO, carga_NTK, carga_NOX, carga_PINORG]
+        [self.matriz_subbacias, self.tam_cel, self.fator] = ler_entrada_hidro(arquivo)
+        matriz_CN = ler_entrada_cn(arquivo) 
+        self.matriz_CME = ler_entrada_cme(arquivo) 
+        self.matriz_usos = ler_entrada_usos(arquivo) 
+        self.matriz_cargas = []  # [carga_DBO, carga_NTK, carga_NOX, carga_PINORG]
         self.calcula_CN(matriz_CN)
 
-    # METODOS
-    # Metodo que executa
     def executa(self, matriz_reducao):
-        self.sub_bacias = self.cria_subbacias(self.tam_cel)  # Lista com sub bacias dadas como entrada (n° em Hidro)
+        self.sub_bacias = self.cria_subbacias(self.tam_cel)
         self.calcula_CME_pond()
         self.gera_vazao_acumulada()
         matriz_difusa = []
         self.sub_bacias.sort(key=Sub_bacia.retorna_chave)  # Ordena a lista de subbacias pela chave
 
-        for i in range(len(self.sub_bacias)):  # Para cada subbacia
-            if len(matriz_reducao) > 0:  # Se matriz_reducao nao for nula
+        for i in range(len(self.sub_bacias)):
+            if len(matriz_reducao) > 0:
                 self.sub_bacias[i].CME_DBO *= (1 - matriz_reducao[i][0])
                 self.sub_bacias[i].CME_NTK *= (1 - matriz_reducao[i][1])
                 self.sub_bacias[i].CME_NOX *= (1 - matriz_reducao[i][2])
-                self.sub_bacias[i].CME_PINORG = self.sub_bacias[i].CME_PINORG * (1 - matriz_reducao[i][3])
+                self.sub_bacias[i].CME_PINORG *= (1 - matriz_reducao[i][3])
+                self.sub_bacias[i].CME_COL *=  (1 - matriz_reducao[i][4])
 
             self.sub_bacias[i].calculaQdistribuida()
             self.sub_bacias[i].constroi_matrizDifusa(matriz_difusa)
@@ -43,7 +39,6 @@ class SCS(object):
 
         return [matriz_difusa, self.sub_bacias, matriz_cargas]
 
-    # Metodo que cria as subbacias
     def cria_subbacias(self, tam_cel):
         lista_subbacias = []
 
@@ -59,11 +54,10 @@ class SCS(object):
 
             lista_subbacias.append(aux)
         
-        # lista_subbacias = lista com sub bacias dadas como entrada
         return lista_subbacias
 
     def gera_vazao_acumulada(self):
-        for i in range(len(self.sub_bacias)):  # Para cada subbacia
+        for i in range(len(self.sub_bacias)): 
             j = i
             Area_anterior = 0
             Q_anterior = 0
@@ -71,30 +65,30 @@ class SCS(object):
             CME_ANTERIOR_NTK = 0
             CME_ANTERIOR_NOX = 0
             CME_ANTERIOR_PINORG = 0
+            CME_ANTERIOR_COL = 0
 
-            while self.sub_bacias[j].Jusante != 0:  # Enquanto a jusante nao for nula
-                if not self.sub_bacias[j].Visitada:  # Se a subbacia nao tiver sido visitada
-                    self.sub_bacias[j].visita_sub()  # Visita a subbacia
+            while self.sub_bacias[j].Jusante != 0: 
+                if not self.sub_bacias[j].Visitada: 
+                    self.sub_bacias[j].visita_sub() 
 
-                    # Guarda valores das constantes
                     Area_anterior = self.sub_bacias[j].Area
                     CME_ANTERIOR_DBO = self.sub_bacias[j].CME_DBO
                     CME_ANTERIOR_NTK = self.sub_bacias[j].CME_NTK
                     CME_ANTERIOR_NOX = self.sub_bacias[j].CME_NOX
                     CME_ANTERIOR_PINORG = self.sub_bacias[j].CME_PINORG
+                    CME_ANTERIOR_COL = self.sub_bacias[j].CME_COL
                     Q_anterior = Q_anterior + self.sub_bacias[j].Q_absoluta
 
-                # j vai para a sub de jusante
                 j = int(self.sub_bacias[j].Jusante) - 1
 
-                # Atualiza os valores das constantes
                 self.sub_bacias[j].Q_acumulada += Q_anterior
                 self.sub_bacias[j].CME_DBO = ((CME_ANTERIOR_DBO * Area_anterior) + (self.sub_bacias[j].CME_DBO * self.sub_bacias[j].Area)) / (Area_anterior + self.sub_bacias[j].Area)
                 self.sub_bacias[j].CME_NTK = ((CME_ANTERIOR_NTK * Area_anterior) + (self.sub_bacias[j].CME_NTK * self.sub_bacias[j].Area)) / (Area_anterior + self.sub_bacias[j].Area)
                 self.sub_bacias[j].CME_NOX = ((CME_ANTERIOR_NOX * Area_anterior) + (self.sub_bacias[j].CME_NOX * self.sub_bacias[j].Area)) / (Area_anterior + self.sub_bacias[j].Area)
                 self.sub_bacias[j].CME_PINORG = ((CME_ANTERIOR_PINORG * Area_anterior) + (self.sub_bacias[j].CME_PINORG * self.sub_bacias[j].Area)) / (Area_anterior + self.sub_bacias[j].Area)
+                self.sub_bacias[j].CME_COL = ((CME_ANTERIOR_COL * Area_anterior) + (self.sub_bacias[j].CME_COL * self.sub_bacias[j].Area)) / (Area_anterior + self.sub_bacias[j].Area)
 
-            if not self.sub_bacias[j].Visitada:  # Se a subbacia nao tiver sido visitada
+            if not self.sub_bacias[j].Visitada:
                 self.sub_bacias[j].visita_sub()
 
     def calcula_CN(self, matriz_cn):
@@ -105,20 +99,17 @@ class SCS(object):
         for i in range(len(matriz_cn)):  # matriz_cn = [ID,Area,CN,Código]
             if matriz_cn[i][0] == j:  # se ID == j
                 numerador = round(numerador + (matriz_cn[i][1] * matriz_cn[i][2]), 4)
-                # numerador = numerados + (area*CN), aproximado com 4 casas decimais
-
                 denominador = round(denominador + (matriz_cn[i][1]), 4)
-                # denominador = denominador + area, aproximado com 4 casas decimais
+
             else:
                 resultado = numerador / denominador
                 j += 1
                 self.vetor_CN.append(resultado)
-                numerador = matriz_cn[i][1] * matriz_cn[i][2]  # numerador = area*CN
-                denominador = matriz_cn[i][1]  # denominador = area
+                numerador = matriz_cn[i][1] * matriz_cn[i][2]
+                denominador = matriz_cn[i][1]
 
         resultado = numerador / denominador
         self.vetor_CN.append(resultado)
-        # self.vetor_cn = vetor com calculos do CN
 
     def calcula_CME_pond(self):
         j = 0
@@ -128,40 +119,30 @@ class SCS(object):
         CME_NTK = 0
         CME_NOX = 0
         CME_PINORG = 0
+        CME_COL = 0
 
-        # matriz_CME = [Codigo,Uso do Solo,CME_DBO,CME_NTK,CME_NOX,CME_PINORG]
+        # matriz_CME = [Codigo,Uso do Solo,CME_DBO,CME_NTK,CME_NOX,CME_PINORG,CME_COL]
         for i in range(len(self.matriz_usos)):  # matriz_usos = [ID,Area_codigo,Codigo]
             if self.matriz_usos[i][0] == (j + 1):  # Se ID == j+1
                 CME_DBO += self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][2]
-                # CME_DBO += Area_codigo * CME_DBO da (codigo-1)-esima linha de Entrada_CME.txt
-
                 CME_NTK += self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][3]
-                # CME_NTK += Area_codigo * CME_NTK da (codigo-1)-esima linha de Entrada_CME.txt
-
                 CME_NOX += self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][4]
-                # CME_NOX += Area_codigo * CME_NOX da (codigo-1)-esima linha de Entrada_CME.txt
-
                 CME_PINORG += self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][5]
-                # CME_PINORG += Area_codigo * CME_PINORG da (codigo-1)-esima linha de Entrada_CME.txt
+                CME_COL += self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][6]
 
-                denominador += (self.matriz_usos[i][1])  # denominador += Area_codigo
+                denominador += (self.matriz_usos[i][1])
             else:
                 CME_DBO_POND = CME_DBO / denominador
                 CME_NTK_POND = CME_NTK / denominador
                 CME_NOX_POND = CME_NOX / denominador
                 CME_PINORG_POND = CME_PINORG / denominador
+                CME_COL_POND = CME_COL / denominador
 
                 CME_DBO = self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][2]
-                # CME_DBO = Area_codigo * CME_DBO da (codigo-1)-esima linha de Entrada_CME.txt
-
                 CME_NTK = self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][3]
-                # CME_NTK = Area_codigo * CME_NTK da (codigo-1)-esima linha de Entrada_CME.txt
-
                 CME_NOX = self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][4]
-                # CME_NOX = Area_codigo * CME_NOX da (codigo-1)-esima linha de Entrada_CME.txt
-
                 CME_PINORG = self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][5]
-                # CME_PINORG = Area_codigo * CME_PINORG da (codigo-1)-esima linha de Entrada_CME.txt
+                CME_COL = self.matriz_usos[i][1] * self.matriz_CME[int(self.matriz_usos[i][2] - 1)][6]
                 
                 denominador = self.matriz_usos[i][1]
 
@@ -169,6 +150,7 @@ class SCS(object):
                 self.sub_bacias[j].CME_NTK = CME_NTK_POND
                 self.sub_bacias[j].CME_NOX = CME_NOX_POND
                 self.sub_bacias[j].CME_PINORG = CME_PINORG_POND
+                self.sub_bacias[j].CME_COL = CME_COL_POND
 
                 j = j + 1
 
@@ -176,34 +158,32 @@ class SCS(object):
         CME_NTK_POND = CME_NTK / denominador
         CME_NOX_POND = CME_NOX / denominador
         CME_PINORG_POND = CME_PINORG / denominador
+        CME_COL_POND = CME_COL / denominador
 
         self.sub_bacias[j].CME_DBO = CME_DBO_POND
         self.sub_bacias[j].CME_NTK = CME_NTK_POND
         self.sub_bacias[j].CME_NOX = CME_NOX_POND
         self.sub_bacias[j].CME_PINORG = CME_PINORG_POND
+        self.sub_bacias[j].CME_COL = CME_COL_POND
 
     def calcula_matriz_cargas(self):
         matriz_cargas = []
         vetor_cargas = []
  
         for i in range(len(self.sub_bacias)):
-            Carga_DBO = self.sub_bacias[i].Q_acumulada * (
-                    ((self.sub_bacias[i].CME_DBO * 1000) / 1000000) * 86400)        
-            Carga_NTK = self.sub_bacias[i].Q_acumulada * (
-                    ((self.sub_bacias[i].CME_NTK * 1000) / 1000000) * 86400)
-            Carga_NOX = self.sub_bacias[i].Q_acumulada * (
-                    ((self.sub_bacias[i].CME_NOX * 1000) / 1000000) * 86400)
-            Carga_PINORG = self.sub_bacias[i].Q_acumulada * (
-                    ((self.sub_bacias[i].CME_PINORG * 1000) / 1000000) * 86400)
+            Carga_DBO = self.sub_bacias[i].Q_acumulada * (((self.sub_bacias[i].CME_DBO * 1000) / 1000000) * 86400)        
+            Carga_NTK = self.sub_bacias[i].Q_acumulada * (((self.sub_bacias[i].CME_NTK * 1000) / 1000000) * 86400)
+            Carga_NOX = self.sub_bacias[i].Q_acumulada * (((self.sub_bacias[i].CME_NOX * 1000) / 1000000) * 86400)
+            Carga_PINORG = self.sub_bacias[i].Q_acumulada * (((self.sub_bacias[i].CME_PINORG * 1000) / 1000000) * 86400)
+            Carga_COL = self.sub_bacias[i].Q_acumulada * (((self.sub_bacias[i].CME_COL * 1000) / 1000000) * 86400)
 
             vetor_cargas.append(Carga_DBO)
             vetor_cargas.append(Carga_NTK)
             vetor_cargas.append(Carga_NOX)
             vetor_cargas.append(Carga_PINORG)
-            # vetor_cargas = [carga_DBO, carga_NTK, carga_NOX, carga_PINORG]
+            vetor_cargas.append(Carga_COL)
 
             matriz_cargas.append(vetor_cargas)
             vetor_cargas = []
 
-        # matriz_cargas = matriz n° subbacias x 4, com vetores [carga_DBO, carga_NTK, carga_NOX, carga_PINORG]
         return matriz_cargas

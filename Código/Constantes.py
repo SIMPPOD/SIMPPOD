@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 # Modulo: Constantes
 
-# Importacao de bibliotecas
 from math import exp
 
 # Definicao de variavel global
 Tbase = 20
 
-# Definicao da classe
 class Constantes:
 
-    # CONSTRUTOR
-    def __init__(self, K1, K2, Ks, Koa, Kan, Knn, Kspo, Koi, Kso, Kt, Samon, Sd, Lrd, Spinorg):
+    def __init__(self, K1, Ks, Koa, Kan, Knn, Kspo, Koi, Kso, Kt, Kb, Samon, Sd, Lrd, Spinorg):
         self.K1 = K1  # Coeficiente de desoxigenacao
-        self.K2 = K2  # Coeficiente de reaeracao
+        self.K2 = 0  # Coeficiente de reaeracao
         self.Ks = Ks  # Coeficiente de sedimentacao
         self.Koa = Koa  # Coeficiente de conversao do nitrogenio organico a amonia
         self.Kan = Kan  # Coeficiente de conversao de amonia a nitrito
@@ -23,12 +20,11 @@ class Constantes:
         self.Kso = Kso  # Coeficiente de sedimentacao do nitrogenio organico
         self.Kt = Kt  # Coeficiente de conversao entre a DBO5 e a DBOu
         self.Kd = 0  # Coeficiente de decomposicao
+        self.Kb = Kb # Coeficiente dos coliformes
         self.Samon = Samon  # Fluxo de liberacao de amonia pelo sedimento de fundo
         self.Sd = Sd
         self.Lrd = Lrd
         self.Spinorg = Spinorg
-
-    # METODOS
 
     # Metodo para ajuste de constantes com base na temperatura
     @staticmethod
@@ -36,7 +32,6 @@ class Constantes:
         corrigido = K * (teta ** (t - tbase))
         return corrigido
 
-    # Metodo que seta o Kd
     def set_Kd(self, Q, H, tetaD, K1, T):
         if H <= 2.5:
             Kd = 0.3 * ((H / 2.5) ** (-0.434))
@@ -49,14 +44,12 @@ class Constantes:
 
         return Kd
 
-    # Metodo que seta o Kt
     @staticmethod
     def set_Kt(K1):
         Kt = (1 / (1 - (exp(-5 * K1))))
             
         return Kt
 
-    # Metodo que calcula K2 baseado em uma das formulas escolhidas pelo usuario
     def set_K2(self, Q, teta2, T, H, v): 
         if H < 0.6:
             coef1 = 5.3 * (v ** 0.67) * (H ** -1.85)
@@ -78,7 +71,7 @@ class Constantes:
         if min(coef1, coef2, coef3) < 10: coef = min(coef1, coef2, coef3)
         else: coef = 10
 
-        K2 = self.correcao(coef1, teta2, T, Tbase)
+        K2 = self.correcao(coef, teta2, T, Tbase)
         return K2
     
     @staticmethod
@@ -93,9 +86,14 @@ class Constantes:
     @staticmethod
     def corrige_Sd(Sd, tetaSd, T, Tbase, H):
         return Sd * (tetaSd ** (T - Tbase)) / H
+    
+    @staticmethod
+    def corrige_k1(K1, tetaK1, T, Tbase):
+        corrigido = K1 * (tetaK1 ** (T - Tbase))
+        return corrigido
 
-    def set_constantes(self, tetaK1, tetaK2, tetaS, tetaOA, tetaAN, tetaNN, tetaSPO, tetaOI, tetaSO, tetaD, tetaSamon, tetaSd, tetaSpinorg, T, Q, H, v):
-        self.K1 = self.correcao(self.K1, tetaK1, T, Tbase)
+    def set_constantes(self, tetaK1, tetaK2, tetaS, tetaOA, tetaAN, tetaNN, tetaSPO, tetaOI, tetaSO, tetaD, tetaSamon, tetaSd, tetaSpinorg, tetaB, T, Q, H, v):
+        self.K1 = self.corrige_k1(self.K1, tetaK1, T, Tbase)
         self.K2 = self.set_K2(Q, tetaK2, T, H, v)
         self.Ks = self.correcao(self.Ks, tetaS, T, Tbase)
         self.Koa = self.correcao(self.Koa, tetaOA, T, Tbase)
@@ -103,9 +101,11 @@ class Constantes:
         self.Knn = self.correcao(self.Knn, tetaNN, T, Tbase)
         self.Kspo = self.correcao(self.Kspo, tetaSPO, T, Tbase)
         self.Koi = self.correcao(self.Koi, tetaOI, T, Tbase)
-        self.Kso = self.correcao(self.Kso, tetaSO, T, Tbase)        
+        self.Kso = self.correcao(self.Kso, tetaSO, T, Tbase)
         self.Kt = self.set_Kt(self.K1)
         self.Kd = self.set_Kd(Q, H, tetaD, self.K1, T)
+        self.Kb = self.correcao(self.Kb, tetaB, T, Tbase)
         self.Samon = self.corrige_Samon(self.Samon, tetaSamon, T, Tbase, H)
         self.Sd = self.corrige_Sd(self.Sd, tetaSd, T, Tbase, H)
         self.Spinorg = self.corrige_Spinorg(self.Spinorg, tetaSpinorg, T, Tbase, H)
+        

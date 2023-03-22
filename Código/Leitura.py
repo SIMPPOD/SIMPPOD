@@ -2,8 +2,6 @@
 # Modulo: Leitura
 from pandas import read_excel
 
-# METODOS
-
 # METODO DE LEITURA DO ARQUIVO ENTRADA PONTUAL
 @staticmethod
 def ler_entrada_pontual(arquivo):
@@ -20,11 +18,11 @@ def ler_entrada_pontual(arquivo):
         for j in range(len(contribuicao)-1):
             contribuicao[j] = float(contribuicao[j])
     
-        if contribuicao[10] == 1:  # Se ExR for 1
-            if contribuicao[11] != 0:  # Se %R nao for 0
-                contribuicao[11] = contribuicao[11]/100 
-                matriz_reducoes[0].append(contribuicao[11])
-            matriz_reducoes[1].append(contribuicao[9])
+        if contribuicao[11] == 1:  # Se ExR for 1
+            if contribuicao[12] != 0:  # Se %R nao for 0
+                contribuicao[12] = contribuicao[12]/100 
+                matriz_reducoes[0].append(contribuicao[12])
+            matriz_reducoes[1].append(contribuicao[10])
         matriz_contribuicoes.append(contribuicao.tolist())
 
     return [matriz_contribuicoes, matriz_reducoes, matriz_tipo_contribuicoes]
@@ -124,7 +122,7 @@ def ler_entrada_otimizacao(arquivo):
 
     for i in range(8,10):
         vetor_pesos_pontual.append(matriz_brkga[0][i])
-    for j in range(8,12):
+    for j in range(8,13):
         vetor_pesos_difusa.append(matriz_brkga[1][j])
 
     return [matriz_brkga, vetor_pesos_pontual, vetor_pesos_difusa] 
