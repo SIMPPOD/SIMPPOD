@@ -71,7 +71,7 @@ class Constantes:
         if min(coef1, coef2, coef3) < 10: coef = min(coef1, coef2, coef3)
         else: coef = 10
 
-        K2 = self.correcao(coef, teta2, T, Tbase)
+        K2 = self.correcao(coef1, teta2, T, Tbase)
         return K2
     
     @staticmethod
@@ -86,14 +86,9 @@ class Constantes:
     @staticmethod
     def corrige_Sd(Sd, tetaSd, T, Tbase, H):
         return Sd * (tetaSd ** (T - Tbase)) / H
-    
-    @staticmethod
-    def corrige_k1(K1, tetaK1, T, Tbase):
-        corrigido = K1 * (tetaK1 ** (T - Tbase))
-        return corrigido
 
     def set_constantes(self, tetaK1, tetaK2, tetaS, tetaOA, tetaAN, tetaNN, tetaSPO, tetaOI, tetaSO, tetaD, tetaSamon, tetaSd, tetaSpinorg, tetaB, T, Q, H, v):
-        self.K1 = self.corrige_k1(self.K1, tetaK1, T, Tbase)
+        self.K1 = self.correcao(self.K1, tetaK1, T, Tbase)
         self.K2 = self.set_K2(Q, tetaK2, T, H, v)
         self.Ks = self.correcao(self.Ks, tetaS, T, Tbase)
         self.Koa = self.correcao(self.Koa, tetaOA, T, Tbase)
@@ -108,4 +103,3 @@ class Constantes:
         self.Samon = self.corrige_Samon(self.Samon, tetaSamon, T, Tbase, H)
         self.Sd = self.corrige_Sd(self.Sd, tetaSd, T, Tbase, H)
         self.Spinorg = self.corrige_Spinorg(self.Spinorg, tetaSpinorg, T, Tbase, H)
-        

@@ -98,7 +98,7 @@ class Euler(object):
 
         Const = Constantes(Rio.K1, Rio.Ks, Rio.Koa, Rio.Kan, Rio.Knn, Rio.Kspo, Rio.Koi, Rio.Kso, Rio.Kt, Rio.Kb, Rio.Samon, Rio.Sd, Rio.Lrd, Rio.Sinorg)
         Const.set_constantes(1.047, 1.024, 1.024, 1.047, 1.080, 1.047, 1.024, 1.047, 1.024, 1.047, 1.074, 1.060, 1.074, 1.07, Rio.T, Rio.Qr, H, v)
-
+    
         if tributarios:
             for i in range(len(celula_entrada_tributarios)): celula_entrada_tributarios[i] *= 1000 / Rio.tam_cel
             [matriz_contribuicoes, matriz_tipo_contribuicoes] = self.ordena_matriz_contribuicoes(matriz_contribuicoes, tributarios, celula_entrada_tributarios, matriz_tipo_contribuicoes)

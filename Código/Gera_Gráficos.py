@@ -84,6 +84,8 @@ def cria_vetor_restricao(indice, tam_rio, tam_cel, ph, classe):
                 vetor_restricao.append(50)
             elif indice == 6:
                 vetor_restricao.append(1)
+            elif indice == 8:
+                vetor_restricao.append(2500)
     return vetor_restricao
 
 # METODO QUE GERA OS GRÁFICOS DE SAÍDA
@@ -97,7 +99,6 @@ def gera_grafico(serie_dados, indice, restricao, tam_cel, tam_rio, classe):
     x = []
     for i in range(int(num_cel)+1):
         x.append(int(i*tam_rio/num_cel))
-    serie_dados[0] = serie_dados[1]
     
     if indice == 8: ax = fig.add_subplot(111, xlabel="Extensão [m]", ylabel="Unidade NMP/100mL")
     else: ax = fig.add_subplot(111, xlabel="Extensão [m]", ylabel="Concentração [mg/L]")
@@ -195,7 +196,8 @@ def gera_grafico_fo(serie_dados, iteracao_versao_rapida):
     janela.wm_title("Comportamento da Função Objetivo ao Longo das Iterações")
 
     fig = Figure(figsize=(6, 4), dpi=100)
-    ax = fig.add_subplot(111, xlabel="Iteração", ylabel="FO (u)", title='Comportamento da FO')
+    ax = fig.add_subplot(111, xlabel="Iteração", ylabel="FO (u)")
+    fig.suptitle("Comportamento da FO")
     ax.plot(serie_dados, 'b')
 
     if iteracao_versao_rapida is not None:
@@ -203,6 +205,15 @@ def gera_grafico_fo(serie_dados, iteracao_versao_rapida):
         ax.legend(['FO', 'Última Iteração no Modo Rápido'], loc='upper right')
     else:
         ax.legend(['FO'], loc='upper right')
+
+    menor = min(serie_dados)
+    maior = max(serie_dados)
+    media = sum(serie_dados)/len(serie_dados)
+
+    fig.text(0.01, 1, 'Mínimo = ' + str(round(menor,4)) +
+                        ' | Máximo = ' + str(round(maior,4)) +
+                        ' | Média = ' + str(round(media,4)),
+            horizontalalignment='left', verticalalignment='bottom', transform = ax.transAxes)
 
     canvas = FigureCanvasTkAgg(fig, master=janela)
     canvas.draw()

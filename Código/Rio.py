@@ -17,7 +17,6 @@ class Rio(object):
         self.PINORGr = PINORGr  # Concentracao de fosforo inorganico no rio
         self.COLr = 10 * COLr  # passa de mL para L
         self.Qr = Qr  # Vazao do rio
-        self.Qinc = Qinc * tam_cel  # Vazao incremental
         self.tam_rio = tam_rio  # Tamanho do rio, em metros
         self.tam_cel = tam_cel  # Tamanho da celula
         self.T = T  # Temperatura
@@ -42,6 +41,7 @@ class Rio(object):
         self.Samon = Samon  # Fluxo de liberacao de amonia pelo sedimento de fundo
         self.Ro2n = Ro2n  # Relacao entre o oxigenio consumido por cada unidade de nitrito oxidado a nitrato
         self.classe = classe  # Classe do rio
+        self.Qinc = Qinc * tam_cel  # Vazao incremental
         self.DBOinc = DBOinc * tam_cel  # DBO incremental
         self.ODinc = ODinc * tam_cel  # OD incremental
         self.NORGinc = NORGinc * tam_cel
@@ -50,7 +50,7 @@ class Rio(object):
         self.NNITRAinc = NNITRAinc * tam_cel
         self.PORGinc = PORGinc * tam_cel
         self.PINORGinc = PINORGinc * tam_cel
-        self.COLinc = 10 * COLinc * tam_cel # passa de mL para L
+        self.COLinc = 10 * COLinc * tam_cel  # passa de mL para L
         self.Sd = Sd
         self.Lrd = Lrd
         self.Nt = kmt * 1000 / tam_cel

@@ -5,9 +5,9 @@ from Leitura import *
 from Gera_Gráficos import *
 from Main import executa
 
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, showinfo
+from tkinter.font import Font
 from tkinter import Tk, LEFT
-from tkinter.ttk import Style
 from tkinter import Button, Checkbutton, Radiobutton
 from tkinter import IntVar, StringVar
 from tkinter import Canvas, Frame, Label
@@ -45,19 +45,21 @@ def Janela_inicial():
     Tela = Tk()
     Tela.resizable(0, 0)
     janela_inicial = Frame(Tela, height=600, width=950, bg='#94B7D5')
-
-    titulo = Label(janela_inicial, text="SIMPPOD", bg='#94B7D5', font=('Arial', '75', 'bold'))
-    sub_titulo = Label(janela_inicial, text="Sistema Integrado de Modelagem de Poluição Pontual e Difusa", bg='#94B7D5', font=('Arial', '12'))
-
-    sobre = Button(janela_inicial, text="Sobre o SIMPPOD", command=Sobre)
-    botao_simulacao = Button(janela_inicial, text="Simulações", command=partial(Janela_simulacao, janela_inicial, Tela))
-
     janela_inicial.place(x=0, y=0)
 
-    titulo.place(x=240, y=200)
-    sub_titulo.place(x=245, y=300)
-    botao_simulacao.place(x=715, y=500)
+    titulo = Label(janela_inicial, text="SIMPPOD", bg='#94B7D5', font=('Arial', '75', 'bold'))
+    length = Font(family='Arial', size=75, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=200)
+
+    sub_titulo = Label(janela_inicial, text="Sistema Integrado de Modelagem de Poluição Pontual e Difusa", bg='#94B7D5', font=('Arial', '12'))
+    length = Font(family='Arial', size=12).measure(sub_titulo["text"])
+    sub_titulo.place(x=(950-length)/2, y=300)
+
+    sobre = Button(janela_inicial, text="Sobre o SIMPPOD", command=Sobre)
     sobre.place(x=130, y=500)
+
+    botao_simulacao = Button(janela_inicial, text="Simulações", command=partial(Janela_simulacao, janela_inicial, Tela))
+    botao_simulacao.place(x=715, y=500)
 
     Tela["bg"] = '#94B7D5'
     Tela.title("SIMPPOD - Sistema Integrado de Modelagem de Poluição Pontual e Difusa")
@@ -81,64 +83,60 @@ def Muda_tela(janela_inicial, novo_frame):
 
 def Janela_inicio(Tela):
     janela_inicial = Frame(Tela, height=600, width=950, bg='#94B7D5')
-
-    titulo = Label(janela_inicial, text="SIMPPOD", bg='#94B7D5', font=('Arial', '75', 'bold'))
-    sub_titulo = Label(janela_inicial, text="Sistema Integrado de Modelagem de Poluição Pontual e Difusa", bg='#94B7D5', font=('Arial', '12'))
-
-    sobre = Button(janela_inicial, text="Sobre o SIMPPOD", command=Sobre)
-    botao_simulacao = Button(janela_inicial, text="Simulações", command=partial(Janela_simulacao, janela_inicial, Tela))
-
     janela_inicial.place(x=0, y=0)
 
-    titulo.place(x=240, y=200)
-    sub_titulo.place(x=245, y=300)
-    botao_simulacao.place(x=715, y=500)
+    titulo = Label(janela_inicial, text="SIMPPOD", bg='#94B7D5', font=('Arial', '75', 'bold'))
+    length = Font(family='Arial', size=75, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=200)
+
+    sub_titulo = Label(janela_inicial, text="Sistema Integrado de Modelagem de Poluição Pontual e Difusa", bg='#94B7D5', font=('Arial', '12'))
+    length = Font(family='Arial', size=12).measure(sub_titulo["text"])
+    sub_titulo.place(x=(950-length)/2, y=300)
+
+    sobre = Button(janela_inicial, text="Sobre o SIMPPOD", command=Sobre)
     sobre.place(x=130, y=500)
+
+    botao_simulacao = Button(janela_inicial, text="Simulações", command=partial(Janela_simulacao, janela_inicial, Tela))
+    botao_simulacao.place(x=715, y=500)
 
     Muda_tela(janela_inicial, janela_inicial)
 
 def Janela_simulacao(janela_inicial, Tela):
     modo_simulacao = IntVar()
 
-    frame_simulacao = Frame(Tela, height=600, width=950, bg='#94B7D5')
+    frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
 
-    canvas_pontual = Canvas(frame_simulacao, height=50, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas_pd = Canvas(frame_simulacao, height=50, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas_brkga = Canvas(frame_simulacao, bg='#94B7D5', height=50, width=946, highlightbackground="black")
-    canvas_selecao = Canvas(frame_simulacao, bg='#94B7D5', height=30, width=946, highlightbackground="black")
+    titulo = Label(frame, text="Selecione o modo de execução:", bg='#94B7D5', font=('Arial', '18', 'bold'))
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
+    
+    canvas_selecao = Canvas(frame, height=155, width=946, bg='#94B7D5', highlightbackground="black")
+    canvas_selecao.place(x=0, y=100)
+    checa_pontual = Radiobutton(canvas_selecao, text="Simular Qualidade de Água",bg='#94B7D5', font=('Arial', '14'),variable=modo_simulacao, value=1)
+    checa_pontual.place(x=2, y=15)
+    checa_pd = Radiobutton(canvas_selecao, text="Estimar Cargas Difusas", bg='#94B7D5', font=('Arial', '14'), variable=modo_simulacao, value=2)
+    checa_pd.place(x=2, y=65)
+    checa_brkga = Radiobutton(canvas_selecao, text="Otimização", bg='#94B7D5', font=('Arial', '14'), variable=modo_simulacao, value=3)   
+    checa_brkga.place(x=2, y=115)
 
-    selecao = Label(canvas_selecao, text="Selecione o modo de execução:", bg='#94B7D5', font=('Arial', '12', 'bold'))
-
-    checa_pontual = Radiobutton(canvas_pontual, text="Simular Qualidade de Água",bg='#94B7D5', variable=modo_simulacao, value=1)
-    checa_pd = Radiobutton(canvas_pd, text="Estimar Cargas Difusas", bg='#94B7D5', variable=modo_simulacao, value=2)
-    checa_brkga = Radiobutton(canvas_brkga, text="Otimização", bg='#94B7D5', variable=modo_simulacao, value=3)
-
-    label_simula = Label(frame_simulacao, text="O que deseja simular?", bg='#94B7D5', font=('Arial', '10', 'bold'))
-    label_simula.place(x=2,y=230)
+    label_simula = Label(frame, text="O que deseja simular?", bg='#94B7D5', font=('Arial', '14', 'bold'))
+    label_simula.place(x=2,y=300)
 
     simula_rio = IntVar()
-    checa_rio = Checkbutton(frame_simulacao, text="Rio Principal", bg='#94B7D5', variable=simula_rio)
-    checa_rio.place(x=2, y=260)
+    checa_rio = Checkbutton(frame, text="Rio Principal", bg='#94B7D5', font=('Arial', '12'), variable=simula_rio)
+    checa_rio.place(x=2, y=330)
 
     simula_tributarios = IntVar()
-    checa_tributarios = Checkbutton(frame_simulacao, text="Tributário(s)", bg='#94B7D5', variable=simula_tributarios)
-    checa_tributarios.place(x=100, y=260)
+    checa_tributarios = Checkbutton(frame, text="Tributário(s)", bg='#94B7D5', font=('Arial', '12'), variable=simula_tributarios)
+    checa_tributarios.place(x=150, y=330)
 
-    botao_executa = Button(frame_simulacao, width=30, text="Avançar", command=partial(Janela_Seleciona_Simulacao, janela_inicial, Tela, modo_simulacao, simula_rio, simula_tributarios))
-    botao_voltar = Button(frame_simulacao, width=30, text="Voltar", command=partial(Janela_inicio, Tela))
-
-    canvas_selecao.place(x=0,y=28)
-    canvas_pontual.place(x=0, y=60)
-    canvas_pd.place(x=0, y=110)
-    canvas_brkga.place(x=0, y=160)
-    selecao.place(x=300, y=2)
-    checa_pontual.place(x=2, y=15)
-    checa_pd.place(x=2, y=15)
-    checa_brkga.place(x=2, y=15)
+    botao_executa = Button(frame, width=30, text="Avançar", command=partial(Janela_Seleciona_Simulacao, janela_inicial, Tela, modo_simulacao, simula_rio, simula_tributarios))
     botao_executa.place(x=550, y=500)
+
+    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_inicio, Tela))
     botao_voltar.place(x=130, y=500)
 
-    Muda_tela(janela_inicial, frame_simulacao)
+    Muda_tela(janela_inicial, frame)
 
 def Janela_Seleciona_Simulacao(janela_inicial, Tela, modo_simulacao, simula_rio, simula_tributarios):
     if not simula_rio.get() and not simula_tributarios.get():
@@ -161,19 +159,21 @@ def Janela_Erro():
 
 def Janela_Simula_Qualidade_Agua(janela_inicial, Tela, simula_rio, simula_tributarios):
     frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
-    canvas = Canvas(frame, height=360, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas.place(x=0, y=60)
 
-    label = Label(frame, text="Simular Qualidade de Água:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-    label.place(x=0,y=20)
+    titulo = Label(frame, text="Simular Qualidade de Água:", bg='#94B7D5', font=('Arial', '18', 'bold'))
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
+
+    canvas_selecao = Canvas(frame, height=105, width=946, bg='#94B7D5', highlightbackground="black")
+    canvas_selecao.place(x=0, y=100)
 
     simula_pontual = IntVar()
-    checa_pontual = Checkbutton(canvas, text="Simular Perfil de Qualidade de Água - Poluição Pontual", bg='#94B7D5', variable=simula_pontual)
-    checa_pontual.place(x=2, y=2)
+    checa_pontual = Checkbutton(canvas_selecao, text="Simular Perfil de Qualidade de Água - Poluição Pontual", bg='#94B7D5', font=('Arial', '14'), variable=simula_pontual)
+    checa_pontual.place(x=2, y=15)
 
     simula_difuso = IntVar()
-    checa_difuso = Checkbutton(canvas, text="Simular Perfil de Qualidade de Água - Poluição Difusa", bg='#94B7D5', variable=simula_difuso)
-    checa_difuso.place(x=2, y=40)
+    checa_difuso = Checkbutton(canvas_selecao, text="Simular Perfil de Qualidade de Água - Poluição Difusa", bg='#94B7D5', font=('Arial', '14'), variable=simula_difuso)
+    checa_difuso.place(x=2, y=65)
 
     botao_executa = Button(frame, width=30, text="Avançar", command=partial(Janela_Simula_Qualidade_Agua_Modo, janela_inicial, Tela, simula_pontual, simula_difuso, simula_rio, simula_tributarios))
     botao_executa.place(x=650, y=500)
@@ -194,79 +194,82 @@ def Janela_Simula_Qualidade_Agua_Modo(janela_inicial, Tela, simula_pontual, simu
     vetor_caminhos = ["", ""]
     diretorio_saidas = StringVar()
 
-    frame_simulacao = Frame(Tela, height=600, width=950, bg='#94B7D5')
+    frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
 
-    canvas_entradas = Canvas(frame_simulacao, height=455, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas_saida = Canvas(frame_simulacao, bg='#94B7D5', height=30, width=946, highlightbackground="black")
-    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios))
-    botao_voltar = Button(frame_simulacao, width=30, text="Voltar", command=partial(Janela_Simula_Qualidade_Agua, janela_inicial, Tela, simula_rio, simula_tributarios))
-    botao_home = Button(frame_simulacao, width=30, text="Início", command=partial(Janela_inicio, Tela))
-    
-    canvas_entradas.place(x=0, y=60)
-    canvas_saida.place(x=0, y=515)
-    botao_executa.place(x=650, y=560)
-    botao_voltar.place(x=30, y=560)
-    botao_home.place(x=340, y=560)
-
-    texto = Label(frame_simulacao, bg='#94B7D5', font=('Arial', '14', 'bold'))
+    titulo = Label(frame, bg='#94B7D5', font=('Arial', '18', 'bold'))
     if modo_execucao.get() == "110":
-        texto["text"] = "Simular Qualidade de Água: Poluição Pontual"    
+        titulo["text"] = "Simular Qualidade de Água: Poluição Pontual"    
     elif modo_execucao.get() == "101":
-        texto["text"] = "Simular Qualidade de Água: Poluição Difusa"
+        titulo["text"] = "Simular Qualidade de Água: Poluição Difusa"
     elif modo_execucao.get() == "111":
-        texto["text"] = "Simular Qualidade de Água: Poluição Pontual e Poluição Difusa"
-    texto.place(x=0, y=20)
+        titulo["text"] = "Simular Qualidade de Água: Poluição Pontual e Poluição Difusa" 
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
 
+    canvas_entradas = Canvas(frame, height=320, width=946, bg='#94B7D5', highlightbackground="black")
     if simula_rio.get() and not simula_tributarios.get():
-        label_rio = Label(canvas_entradas, width=10, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_rio = Label(canvas_entradas, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_rio.place(x=6, y=20)
-        label_entrada_rio = Label(canvas_entradas, width=85, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
+        label_entrada_rio = Label(canvas_entradas, width=87, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
         label_entrada_rio.place(x=6, y=54)
         botao_entrada_rio = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_rio, 0))
-        botao_entrada_rio.place(x=780, y=50)
+        botao_entrada_rio.place(x=800, y=50)
         botao_reset_rio = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_rio, 0))
-        botao_reset_rio.place(x=850, y=50)
+        botao_reset_rio.place(x=870, y=50)
     
     elif not simula_rio.get() and simula_tributarios.get():
-        label_tributarios = Label(canvas_entradas, width=10, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_tributarios = Label(canvas_entradas, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_tributarios.place(x=6, y=20)
-        label_entrada_tributarios = Label(canvas_entradas, width=70, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
-        label_entrada_tributarios.place(x=6, y=50)
+        label_entrada_tributarios = Label(canvas_entradas, width=87, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
+        label_entrada_tributarios.place(x=6, y=54)
         botao_entrada_tributarios = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_entrada_tributarios.place(x=650, y=50)
+        botao_entrada_tributarios.place(x=800, y=50)
         botao_reset_tributarios = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_reset_tributarios.place(x=700, y=50)
+        botao_reset_tributarios.place(x=870, y=50)
 
     else:
-        label_rio = Label(canvas_entradas, width=10, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_rio = Label(canvas_entradas, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_rio.place(x=6, y=20)
-        label_entrada_rio = Label(canvas_entradas, width=70, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
-        label_entrada_rio.place(x=6, y=50)
+        label_entrada_rio = Label(canvas_entradas, width=87, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
+        label_entrada_rio.place(x=6, y=54)
         botao_entrada_rio = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_rio, 0))
-        botao_entrada_rio.place(x=650, y=50)
+        botao_entrada_rio.place(x=800, y=50)
         botao_reset_rio = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_rio, 0))
-        botao_reset_rio.place(x=700, y=50)
+        botao_reset_rio.place(x=870, y=50)
 
-        label_tributarios = Label(canvas_entradas, width=10, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
-        label_tributarios.place(x=6, y=100)
-        label_entrada_tributarios = Label(canvas_entradas, width=70, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
-        label_entrada_tributarios.place(x=6, y=130)
+        label_tributarios = Label(canvas_entradas,text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_tributarios.place(x=6, y=130)
+        label_entrada_tributarios = Label(canvas_entradas, width=87, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
+        label_entrada_tributarios.place(x=6, y=164)
         botao_entrada_tributarios = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_entrada_tributarios.place(x=650, y=130)
+        botao_entrada_tributarios.place(x=800, y=160)
         botao_reset_tributarios = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_reset_tributarios.place(x=700, y=130)
+        botao_reset_tributarios.place(x=870, y=160)
 
-    label_saidas = Label(canvas_saida, width=85, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
-    botao_saidas = Button(canvas_saida, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
-    botao_reset_saida = Button(canvas_saida, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
-    label_saidas.place(x=6, y=8)
-    botao_saidas.place(x=780, y=4)
-    botao_reset_saida.place(x=850, y=4)
+    label_saida = Label(canvas_entradas, text="Saídas:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+    label_saida.place(x=6, y=240)
+    label_saidas = Label(canvas_entradas, width=87, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
+    label_saidas.place(x=6, y=274)
+    botao_saidas = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
+    botao_saidas.place(x=800, y=270)
+    botao_reset_saida = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
+    botao_reset_saida.place(x=870, y=270)
+
+    canvas_entradas.place(x=0, y=100)
+    
+    botao_executa = Button(frame, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios))
+    botao_executa.place(x=650, y=500)
+
+    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_Simula_Qualidade_Agua, janela_inicial, Tela, simula_rio, simula_tributarios))
+    botao_voltar.place(x=30, y=500)
+
+    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_home.place(x=340, y=500)
 
     if modo_execucao.get() != "110" and modo_execucao.get() != "101" and modo_execucao.get() != "111":
         Janela_Erro()
     else: 
-        Muda_tela(janela_inicial, frame_simulacao)
+        Muda_tela(janela_inicial, frame)
 
 def Janela_Estima_Cargas_Difusas(janela_inicial, Tela, modo_execucao, simula_rio, simula_tributarios):
     modo_otimizacao = IntVar()
@@ -274,127 +277,136 @@ def Janela_Estima_Cargas_Difusas(janela_inicial, Tela, modo_execucao, simula_rio
     vetor_caminhos = ["", ""]
     diretorio_saidas = StringVar()
     
-    frame_simulacao = Frame(Tela, height=600, width=950, bg='#94B7D5')
+    frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
 
-    canvas_entradas = Canvas(frame_simulacao, height=455, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas_saida = Canvas(frame_simulacao, bg='#94B7D5', height=30, width=946, highlightbackground="black")
-    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios))
-    botao_voltar = Button(frame_simulacao, width=30, text="Voltar", command=partial(Janela_simulacao, janela_inicial, Tela))
-    botao_home = Button(frame_simulacao, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    titulo = Label(frame, bg='#94B7D5', text="Estimar Cargas Difusas", font=('Arial', '18', 'bold'))
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
 
-    canvas_entradas.place(x=0, y=60)
-    canvas_saida.place(x=0, y=515)
-    botao_executa.place(x=650, y=560)
-    botao_voltar.place(x=30, y=560)
-    botao_home.place(x=340, y=560)
-
-    texto = Label(frame_simulacao, bg='#94B7D5', font=('Arial', '14', 'bold'))
-    texto["text"] = "Estimar Cargas Difusas"    
-    texto.place(x=0, y=20)
-
+    canvas_entradas = Canvas(frame, height=320, width=946, bg='#94B7D5', highlightbackground="black")
     if simula_rio.get() and not simula_tributarios.get():
-        label_rio = Label(canvas_entradas, width=10, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_rio = Label(canvas_entradas, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_rio.place(x=6, y=20)
-        label_entrada_rio = Label(canvas_entradas, width=85, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
-        label_entrada_rio.place(x=6, y=50)
+        label_entrada_rio = Label(canvas_entradas, width=87, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
+        label_entrada_rio.place(x=6, y=54)
         botao_entrada_rio = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_rio, 0))
-        botao_entrada_rio.place(x=780, y=50)
+        botao_entrada_rio.place(x=800, y=50)
         botao_reset_rio = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_rio, 0))
-        botao_reset_rio.place(x=850, y=50)
+        botao_reset_rio.place(x=870, y=50)
     
     elif not simula_rio.get() and simula_tributarios.get():
-        label_tributarios = Label(canvas_entradas, width=10, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_tributarios = Label(canvas_entradas, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_tributarios.place(x=6, y=20)
-        label_entrada_tributarios = Label(canvas_entradas, width=85, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
-        label_entrada_tributarios.place(x=6, y=50)
+        label_entrada_tributarios = Label(canvas_entradas, width=87, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
+        label_entrada_tributarios.place(x=6, y=54)
         botao_entrada_tributarios = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_entrada_tributarios.place(x=780, y=50)
+        botao_entrada_tributarios.place(x=800, y=50)
         botao_reset_tributarios = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_reset_tributarios.place(x=850, y=50)
+        botao_reset_tributarios.place(x=870, y=50)
 
     else:
-        label_rio = Label(canvas_entradas, width=10, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_rio = Label(canvas_entradas, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_rio.place(x=6, y=20)
-        label_entrada_rio = Label(canvas_entradas, width=85, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
-        label_entrada_rio.place(x=6, y=50)
+        label_entrada_rio = Label(canvas_entradas, width=87, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
+        label_entrada_rio.place(x=6, y=54)
         botao_entrada_rio = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_rio, 0))
-        botao_entrada_rio.place(x=780, y=50)
+        botao_entrada_rio.place(x=800, y=50)
         botao_reset_rio = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_rio, 0))
-        botao_reset_rio.place(x=850, y=50)
+        botao_reset_rio.place(x=870, y=50)
 
-        label_tributarios = Label(canvas_entradas, width=10, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
-        label_tributarios.place(x=6, y=100)
-        label_entrada_tributarios = Label(canvas_entradas, width=85, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
-        label_entrada_tributarios.place(x=6, y=130)
+        label_tributarios = Label(canvas_entradas,text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_tributarios.place(x=6, y=130)
+        label_entrada_tributarios = Label(canvas_entradas, width=87, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
+        label_entrada_tributarios.place(x=6, y=164)
         botao_entrada_tributarios = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_entrada_tributarios.place(x=780, y=130)
+        botao_entrada_tributarios.place(x=800, y=160)
         botao_reset_tributarios = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_reset_tributarios.place(x=850, y=130)
+        botao_reset_tributarios.place(x=870, y=160)
 
-    label_saidas = Label(canvas_saida, width=85, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
-    botao_saidas = Button(canvas_saida, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
-    botao_reset_saida = Button(canvas_saida, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
-    label_saidas.place(x=6, y=4)
-    botao_saidas.place(x=780, y=4)
-    botao_reset_saida.place(x=850, y=4)
+    label_saida = Label(canvas_entradas, text="Saídas:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+    label_saida.place(x=6, y=240)
+    label_saidas = Label(canvas_entradas, width=87, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
+    label_saidas.place(x=6, y=274)
+    botao_saidas = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
+    botao_saidas.place(x=800, y=270)
+    botao_reset_saida = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
+    botao_reset_saida.place(x=870, y=270)
 
-    Muda_tela(janela_inicial, frame_simulacao)
+    canvas_entradas.place(x=0, y=100)
+
+    botao_executa = Button(frame, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios))
+    botao_executa.place(x=650, y=500)
+
+    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_simulacao, janela_inicial, Tela))
+    botao_voltar.place(x=30, y=500)
+
+    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_home.place(x=340, y=500)
+
+    Muda_tela(janela_inicial, frame)
 
 def Janela_Simula_Escolhe_Otimizacao(janela_inicial, Tela, simula_rio, simula_tributarios):
     frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
-    canvas = Canvas(frame, height=455, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas.place(x=0, y=60)
 
-    label = Label(frame, text="Otimização:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-    label.place(x=0,y=20)
+    titulo = Label(frame, text="Simular Modelo de Otimização:", bg='#94B7D5', font=('Arial', '18', 'bold'))
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
+
+    canvas = Canvas(frame, height=155, width=946, bg='#94B7D5', highlightbackground="black")
+    canvas.place(x=0, y=100)
 
     modo_otimizacao = IntVar()
-    checa_ag = Radiobutton(canvas, text="Otimização com AG1", bg='#94B7D5', variable=modo_otimizacao, value=1)
-    checa_ag.place(x=2, y=2)
+    checa_ag = Radiobutton(canvas, text="Otimização com AG1", bg='#94B7D5', font=('Arial', '14'), variable=modo_otimizacao, value=1)
+    checa_ag.place(x=2, y=15)
 
-    checa_agm = Radiobutton(canvas, text="Otimização com AG2", bg='#94B7D5', variable=modo_otimizacao, value=2)
-    checa_agm.place(x=2, y=40)
+    checa_agm = Radiobutton(canvas, text="Otimização com AG2", bg='#94B7D5', font=('Arial', '14'), variable=modo_otimizacao, value=2)
+    checa_agm.place(x=2, y=65)
 
-    checa_brkga = Radiobutton(canvas, text="Otimização com BRKGA", bg='#94B7D5', variable=modo_otimizacao, value=3)
-    checa_brkga.place(x=2, y=78)
+    checa_brkga = Radiobutton(canvas, text="Otimização com BRKGA", bg='#94B7D5', font=('Arial', '14'), variable=modo_otimizacao, value=3)
+    checa_brkga.place(x=2, y=115)
 
     botao_executa = Button(frame, width=30, text="Avançar", command=partial(Janela_Simula_Otimizacao, janela_inicial, Tela, modo_otimizacao, simula_rio, simula_tributarios))
-    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_simulacao, janela_inicial, Tela))
-    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_executa.place(x=650, y=500)
 
-    botao_executa.place(x=650, y=560)
-    botao_voltar.place(x=30, y=560)
-    botao_home.place(x=340, y=560)
+    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_simulacao, janela_inicial, Tela))
+    botao_voltar.place(x=30, y=500)
+
+    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_home.place(x=340, y=500)
 
     Muda_tela(janela_inicial, frame)
 
 def Janela_Simula_Otimizacao(janela_inicial, Tela, modo_otimizacao, simula_rio, simula_tributarios):
     frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
-    canvas = Canvas(frame, height=455, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas.place(x=0, y=60)
 
+    titulo = Label(frame, bg='#94B7D5', font=('Arial', '18', 'bold'))
     if modo_otimizacao.get() == 1:
-        label = Label(frame, text="Otimização com AG1:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+        titulo["text"] = "Otimização com AG1:"
     elif modo_otimizacao.get() == 2:
-        label = Label(frame, text="Otimização com AG2:", bg='#94B7D5', font=('Arial', '14', 'bold'))
+        titulo["text"] = "Otimização com AG2:"
     else:
-        label = Label(frame, text="Otimização com BRKGA:", bg='#94B7D5', font=('Arial', '14', 'bold'))
-    label.place(x=0,y=20)
+        titulo["text"] = "Otimização com BRKGA:"
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
+
+    canvas = Canvas(frame, height=105, width=946, bg='#94B7D5', highlightbackground="black")
+    canvas.place(x=0, y=100)
 
     modo_simulacao = IntVar()
-    checa_pontual = Radiobutton(canvas, text="Otimização de Fontes Pontuais", bg='#94B7D5', variable=modo_simulacao, value=1)
-    checa_pontual.place(x=2, y=2)
+    checa_pontual = Radiobutton(canvas, text="Otimização de Fontes Pontuais", bg='#94B7D5', font=('Arial', '14'), variable=modo_simulacao, value=1)
+    checa_pontual.place(x=2, y=15)
 
-    checa_difuso = Radiobutton(canvas, text="Otimização de Fontes Pontuais e de Fontes Difusas", bg='#94B7D5', variable=modo_simulacao, value=2)
-    checa_difuso.place(x=2, y=40)
+    checa_difuso = Radiobutton(canvas, text="Otimização de Fontes Pontuais e de Fontes Difusas", bg='#94B7D5', font=('Arial', '14'), variable=modo_simulacao, value=2)
+    checa_difuso.place(x=2, y=65)
 
     botao_executa = Button(frame, width=30, text="Avançar", command=partial(Janela_Simula_Otimizacao_Modo, janela_inicial, Tela, modo_simulacao, modo_otimizacao, simula_rio, simula_tributarios))
-    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_Simula_Escolhe_Otimizacao, janela_inicial, Tela, simula_rio, simula_tributarios))
-    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_executa.place(x=650, y=500)
 
-    botao_executa.place(x=650, y=560)
-    botao_voltar.place(x=30, y=560)
-    botao_home.place(x=340, y=560)
+    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_Simula_Escolhe_Otimizacao, janela_inicial, Tela, simula_rio, simula_tributarios))
+    botao_voltar.place(x=30, y=500)
+
+    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_home.place(x=340, y=500)
 
     if modo_otimizacao.get() == 0:
         Janela_Erro()
@@ -407,100 +419,102 @@ def Janela_Simula_Otimizacao_Modo(janela_inicial, Tela, modo_simulacao, modo_oti
     vetor_caminhos = ["", ""]
     diretorio_saidas = StringVar()
 
-    frame_simulacao = Frame(Tela, height=600, width=950, bg='#94B7D5')
+    frame = Frame(Tela, height=600, width=950, bg='#94B7D5')
 
-    canvas_entradas = Canvas(frame_simulacao, height=455, width=946, bg='#94B7D5', highlightbackground="black")
-    canvas_saida = Canvas(frame_simulacao, bg='#94B7D5', height=30, width=946, highlightbackground="black")
-    botao_executa = Button(frame_simulacao, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios))
-    botao_voltar = Button(frame_simulacao, width=30, text="Voltar", command=partial(Janela_Simula_Otimizacao, janela_inicial, Tela, modo_otimizacao, simula_rio, simula_tributarios))
-    botao_home = Button(frame_simulacao, width=30, text="Início", command=partial(Janela_inicio, Tela))
-
-    canvas_entradas.place(x=0, y=60)
-    canvas_saida.place(x=0, y=515)
-    botao_executa.place(x=650, y=560)
-    botao_voltar.place(x=30, y=560)
-    botao_home.place(x=340, y=560)
-
-    texto = Label(frame_simulacao, bg='#94B7D5', font=('Arial', '14', 'bold'))
-    texto.place(x=0, y=20)
-
+    titulo = Label(frame, bg='#94B7D5', font=('Arial', '18', 'bold'))
     if modo_execucao.get() == "21":
         if modo_otimizacao.get() == 1:
-            texto["text"] = "Otimização de Fontes Pontuais com AG1"
+            titulo["text"] = "Otimização de Fontes Pontuais com AG1"
         elif modo_otimizacao.get() == 2:
-            texto["text"] = "Otimização de Fontes Pontuais com AG2"
+            titulo["text"] = "Otimização de Fontes Pontuais com AG2"
         else:
-            texto["text"] = "Otimização de Fontes Pontuais com BRKGA"
+            titulo["text"] = "Otimização de Fontes Pontuais com BRKGA"
    
     elif modo_execucao.get() == "22":
         if modo_otimizacao.get() == 1:
-            texto["text"] = "Otimização de Fontes Pontuais e de Fontes Difusas com AG1"
+            titulo["text"] = "Otimização de Fontes Pontuais e de Fontes Difusas com AG1"
         elif modo_otimizacao.get() == 2:
-            texto["text"] = "Otimização de Fontes Pontuais e de Fontes Difusas com AG2"
+            titulo["text"] = "Otimização de Fontes Pontuais e de Fontes Difusas com AG2"
         else:
-            texto["text"] = "Otimização de Fontes Pontuais e de Fontes Difusas com BRKGA"
+            titulo["text"] = "Otimização de Fontes Pontuais e de Fontes Difusas com BRKGA"
+    length = Font(family='Arial', size=18, weight='bold').measure(titulo["text"])
+    titulo.place(x=(950-length)/2, y=35)
 
+    canvas_entradas = Canvas(frame, height=320, width=946, bg='#94B7D5', highlightbackground="black")
     if simula_rio.get() and not simula_tributarios.get():
-        label_rio = Label(canvas_entradas, width=10, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_rio = Label(canvas_entradas, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_rio.place(x=6, y=20)
-        label_entrada_rio = Label(canvas_entradas, width=85, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
-        label_entrada_rio.place(x=6, y=50)
+        label_entrada_rio = Label(canvas_entradas, width=87, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
+        label_entrada_rio.place(x=6, y=54)
         botao_entrada_rio = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_rio, 0))
-        botao_entrada_rio.place(x=780, y=50)
+        botao_entrada_rio.place(x=800, y=50)
         botao_reset_rio = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_rio, 0))
-        botao_reset_rio.place(x=850, y=50)
+        botao_reset_rio.place(x=870, y=50)
     
     elif not simula_rio.get() and simula_tributarios.get():
-        label_tributarios = Label(canvas_entradas, width=10, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_tributarios = Label(canvas_entradas, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_tributarios.place(x=6, y=20)
-        label_entrada_tributarios = Label(canvas_entradas, width=85, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
-        label_entrada_tributarios.place(x=6, y=50)
+        label_entrada_tributarios = Label(canvas_entradas, width=87, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
+        label_entrada_tributarios.place(x=6, y=54)
         botao_entrada_tributarios = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_entrada_tributarios.place(x=780, y=50)
+        botao_entrada_tributarios.place(x=800, y=50)
         botao_reset_tributarios = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_reset_tributarios.place(x=850, y=50)
-    
+        botao_reset_tributarios.place(x=870, y=50)
+
     else:
-        label_rio = Label(canvas_entradas, width=10, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_rio = Label(canvas_entradas, text="Rio Principal:", bg='#94B7D5', font=('Arial', '12', 'bold'))
         label_rio.place(x=6, y=20)
-        label_entrada_rio = Label(canvas_entradas, width=85, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
-        label_entrada_rio.place(x=6, y=50)
+        label_entrada_rio = Label(canvas_entradas, width=87, text="Selecione o Arquivo de Entrada do Rio Principal...", font=('Arial', '12'))
+        label_entrada_rio.place(x=6, y=54)
         botao_entrada_rio = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_rio, 0))
-        botao_entrada_rio.place(x=780, y=50)
+        botao_entrada_rio.place(x=800, y=50)
         botao_reset_rio = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_rio, 0))
-        botao_reset_rio.place(x=850, y=50)
+        botao_reset_rio.place(x=870, y=50)
 
-        label_tributarios = Label(canvas_entradas, width=10, text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
-        label_tributarios.place(x=6, y=100)
-        label_entrada_tributarios = Label(canvas_entradas, width=85, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
-        label_entrada_tributarios.place(x=6, y=130)
+        label_tributarios = Label(canvas_entradas,text="Tributário(s):", bg='#94B7D5', font=('Arial', '12', 'bold'))
+        label_tributarios.place(x=6, y=130)
+        label_entrada_tributarios = Label(canvas_entradas, width=87, text="Selecione o(s) Arquivo(s) de Entrada do(s) Tributário(s)...", font=('Arial', '12'))
+        label_entrada_tributarios.place(x=6, y=164)
         botao_entrada_tributarios = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_arquivo, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_entrada_tributarios.place(x=780, y=130)
+        botao_entrada_tributarios.place(x=800, y=160)
         botao_reset_tributarios = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_botao, vetor_caminhos, label_entrada_tributarios, 1))
-        botao_reset_tributarios.place(x=850, y=130)
+        botao_reset_tributarios.place(x=870, y=160)
 
-    label_saidas = Label(canvas_saida, width=85, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
-    botao_saidas = Button(canvas_saida, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
-    botao_reset_saida = Button(canvas_saida, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
-    label_saidas.place(x=6, y=4)
-    botao_saidas.place(x=780, y=4)
-    botao_reset_saida.place(x=850, y=4)
+    label_saida = Label(canvas_entradas, text="Saídas:", bg='#94B7D5', font=('Arial', '12', 'bold'))
+    label_saida.place(x=6, y=240)
+    label_saidas = Label(canvas_entradas, width=87, text="Selecione o caminho para as Saidas...", font=('Arial', '12'))
+    label_saidas.place(x=6, y=274)
+    botao_saidas = Button(canvas_entradas, width=5, text="Abrir", command=partial(le_saida, diretorio_saidas, label_saidas))
+    botao_saidas.place(x=800, y=270)
+    botao_reset_saida = Button(canvas_entradas, width=5, text="Reset", command=partial(reset_saida, diretorio_saidas, label_saidas))
+    botao_reset_saida.place(x=870, y=270)
+
+    canvas_entradas.place(x=0, y=100)
+    
+    botao_executa = Button(frame, width=30, text="Executar", command=partial(Janela_saidas, janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios))
+    botao_executa.place(x=650, y=500)
+
+    botao_voltar = Button(frame, width=30, text="Voltar", command=partial(Janela_Simula_Otimizacao, janela_inicial, Tela, modo_otimizacao, simula_rio, simula_tributarios))
+    botao_voltar.place(x=30, y=500)
+
+    botao_home = Button(frame, width=30, text="Início", command=partial(Janela_inicio, Tela))
+    botao_home.place(x=340, y=500)
 
     if modo_execucao.get() != "21" and modo_execucao.get() != "22":
         Janela_Erro()
     else:
-        Muda_tela(janela_inicial, frame_simulacao)
+        Muda_tela(janela_inicial, frame)
 
 def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_execucao, modo_otimizacao, simula_rio, simula_tributarios):
     diretorio_saidas = diretorio_saidas.get()
 
     frame_saidas = Frame(Tela, height=600, width=950, bg='#94B7D5')
-    canvas_saidas = Canvas(frame_saidas, height=150, width=946, highlightbackground="black")
+    canvas_saidas = Canvas(frame_saidas, width=946, highlightbackground="black")
     canvas_saidas.place(x=0,y=30)
-    label_caixa_textos = Label(canvas_saidas, text=" ", justify=LEFT, font=('Arial', '10'))
+    label_caixa_textos = Label(canvas_saidas, justify=LEFT, font=('Arial', '10'))
     label_caixa_textos.place(x=2, y=2)
     
-    label_caixa_textos["text"] = label_caixa_textos["text"] + "Simulação Finalizada!\n"
+    label_caixa_textos["text"] = "\nSimulação Finalizada!\n"
 
     canvas_nova_simulacao = Canvas(frame_saidas, height=25, width=946, bg='#94B7D5', highlightbackground="black")
     canvas_nova_simulacao.place(x=0,y=550)
@@ -510,12 +524,12 @@ def Janela_saidas(janela_inicial, Tela, vetor_caminhos, diretorio_saidas, modo_e
     if diretorio_saidas == "" or (simula_rio.get() and vetor_caminhos[0] == "") or (simula_tributarios.get() and vetor_caminhos[1] == ""):
         Janela_Erro()
     else:
-        Muda_tela(janela_inicial, frame_saidas)
-
         [cenario_base_pontual, melhor_solucao_pontual, cenario_base_difusa, melhor_solucao_difusa,
         historico_foP, historico_fo, historico_tempo_iteracoesP, historico_tempo_iteracoes,
         historico_filhos_invalidosP, historico_filhos_invalidos, iteracao_versao_rapidaP, iteracao_versao_rapida,
         tam_rio, tam_cel, ph, perfilQP, perfilQ] = executa(vetor_caminhos, diretorio_saidas, modo_execucao, label_caixa_textos, modo_otimizacao, simula_rio, simula_tributarios)
+
+        Muda_tela(janela_inicial, frame_saidas)
 
         if simula_rio.get() or (not simula_rio.get() and len(vetor_caminhos[1]) == 1):
             if modo_execucao.get() != 2:

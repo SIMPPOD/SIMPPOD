@@ -395,7 +395,7 @@ def Escreve_saida_PD(arquivo, cenario):
 def Escreve_saida_otimizacao(arquivo, solucao_otimizada, tempo, vetor_invalidos):
     arq = open(arquivo, "a+")
     arq.write("Resultados da Otimização de Poluição Pontual: Identificação dos valores mínimos de redução necessários ao atendimento da classe de QA desejada \n")
-    arq.write("Tempo de processamento (s):; " + converte_float(str(tempo)) + "\n")
+    arq.write("Tempo de processamento (s):; " + converte_float(tempo) + "\n")
     arq.write("Número de inválidos gerados:; " + str(vetor_invalidos) + "\n")
 
     if solucao_otimizada.simula_difusa:
@@ -407,9 +407,13 @@ def Escreve_saida_otimizacao(arquivo, solucao_otimizada, tempo, vetor_invalidos)
                 arq.write(str(solucao_otimizada.alelos[i][j]) + ";") 
             arq.write("\n")
     else:
-        for i in range(len(solucao_otimizada.alelos)): 
-            arq.write("Eficiência de Tratamento/Redução:;" + converte_float(str(solucao_otimizada.alelos[i])) + "\n")
+        for i in range(len(solucao_otimizada.alelos)):
+            if type(solucao_otimizada.alelos[i]) is list:
+                arq.write("Eficiência de Tratamento/Redução:;")
+                for j in range(len(solucao_otimizada.alelos[i])): arq.write(converte_float(solucao_otimizada.alelos[i][j]) + " ")
+                arq.write("\n")
+            else: arq.write("Eficiência de Tratamento/Redução:;" + converte_float(solucao_otimizada.alelos[i]) + "\n")
 
-    arq.write("Nota da F.O. para a melhor solucao:; " + converte_float(str(solucao_otimizada.func_objetivo)) + "\n\n")
+    arq.write("Nota da F.O. para a melhor solucao:; " + converte_float(solucao_otimizada.func_objetivo) + "\n\n")
     arq.write("OBS: As eficiencias de tratamento/redução se encontram expressas em decimal.\n")
     arq.close()

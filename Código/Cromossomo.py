@@ -65,7 +65,7 @@ class Cromossomo:
                         aux = []
                 else: 
                     for i in range(self.tam_cromossomo):
-                        self.alelos_codificados.append((round(uniform(0.999, 1.0), 4)))
+                        self.alelos_codificados.append((round(uniform(0.0, 1.0), 4)))
 
     def set_alelos(self, alelos):
         self.alelos = alelos
@@ -261,13 +261,13 @@ class Cromossomo:
                     if self.cenario.Y_DBO[i] > 10 or self.cenario.Y_OD[i] < 4:
                         return False
                 for i in range(len(self.cenario.Y_Namon)):
-                    if (self.cenario.Y_Namon[i] >= 13.3 and Rio.PH <= 7.5) or self.cenario.Y_OD[i] < 4:
+                    if (self.cenario.Y_Namon[i] >= 13.3 and Rio.PH <= 7.5): # or self.cenario.Y_OD[i] < 4:
                         return False
-                    elif (self.cenario.Y_Namon[i] >= 5.6 and 7.5 <= Rio.PH <= 8.0) or self.cenario.Y_OD[i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 5.6 and 7.5 <= Rio.PH <= 8.0): # or self.cenario.Y_OD[i] < 4:
                         return False
-                    elif (self.cenario.Y_Namon[i] >= 2.2 and 8.0 <= Rio.PH <= 8.5) or self.cenario.Y_OD[i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 2.2 and 8.0 <= Rio.PH <= 8.5): # or self.cenario.Y_OD[i] < 4:
                         return False
-                    elif (self.cenario.Y_Namon[i] >= 1.0 and Rio.PH > 8.5) or self.cenario.Y_OD[i] < 4:
+                    elif (self.cenario.Y_Namon[i] >= 1.0 and Rio.PH > 8.5): # or self.cenario.Y_OD[i] < 4:
                         return False
             return True
 
