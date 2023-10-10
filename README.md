@@ -25,11 +25,11 @@ O SIMPPOD atua nas etapas de Diagnóstico e Prognóstico, na primeira ao estimar
 
 ## Download e Execução <a name="download"></a>
 
-1. Faça o [download](https://github.com/SIMPPOD/SIMPPOD/releases/download/SIMPPOD/SIMPPOD.zip)
-2. Extraia o arquivo `SIMPPOD.zip`
-3. Entre na pasta raiz e execute o arquivo `SIMPPOD.exe`
+1. [SIMPPOD 1.0 ](https://github.com/SIMPPOD/SIMPPOD/releases/download/SIMPPOD-v1.0/SIMPPOD_v1.0)
+2. [SIMPPOD 1.1 ](https://github.com/SIMPPOD/SIMPPOD/releases/download/SIMPPOD-v1.1/SIMPPOD_v1.1)
+3. [SIMPPOD 1.2 ](https://github.com/SIMPPOD/SIMPPOD/releases/download/SIMPPOD-v1.2/SIMPPOD_v1.2)
 
-> **_NOTE:_**  É normal demorar alguns segundos para a aplicação abrir. Será aberto o programa do SIMPPOD bem como um terminal de comando onde serão exibidas algumas informações durante a execução do programa.
+> **_NOTE:_**  É normal demorar alguns segundos para a aplicação abrir. Será aberto o programa do SIMPPOD.
 
 ## Idealizadores <a name="idealizadores"></a>
 
